@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<name>WorkPlane</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ru.home.workplane</groupId>
+	<artifactId>WorkPlane</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>web</module>
+		<module>jar</module>
+	</modules>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jdk.version>1.8</jdk.version>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<vaadin.version>8.1.0</vaadin.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>ru.home.workplane</groupId>
+				<artifactId>WorkPlane-jar</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+			</dependency>
+			<dependency>
+				<groupId>ru.home.workplane</groupId>
+				<artifactId>WorkPlane-web</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+    			<groupId>org.eclipse.jetty</groupId>
+    			<artifactId>jetty-server</artifactId>
+    			<version>9.4.6.v20170531</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+    			<groupId>org.eclipse.jetty</groupId>
+    			<artifactId>jetty-maven-plugin</artifactId>
+    			<version>9.4.6.v20170531</version>
+				<configuration>
+					<webAppSourceDirectory>${basedir}/web/target</webAppSourceDirectory>
+					<war>${basedir}/web/target/WorkPlane-web.war</war>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

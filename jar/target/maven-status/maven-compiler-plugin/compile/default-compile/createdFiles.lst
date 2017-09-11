@@ -1,0 +1,8 @@
+ru/home/workplane/model/Organization.class
+ru/home/workplane/model/Bug.class
+ru/home/workplane/model/Skill.class
+ru/home/workplane/model/Log.class
+ru/home/workplane/enums/ProjectStates.class
+ru/home/workplane/model/User.class
+ru/home/workplane/model/Project.class
+ru/home/workplane/model/Diary.class
