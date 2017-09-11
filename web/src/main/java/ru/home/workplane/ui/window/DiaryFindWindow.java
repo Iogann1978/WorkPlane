@@ -4,6 +4,8 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 
+import ru.home.workplane.util.Tools;
+
 public class DiaryFindWindow extends AbstractWindow {
 	private static final long serialVersionUID = 1L;
 	
@@ -12,7 +14,7 @@ public class DiaryFindWindow extends AbstractWindow {
 		
 		setCaption("Поиск по строке");
 		setHeight("180px");
-		setWidth("400px");
+		setWidth(Tools.SHORT_WIDTH);
 		setIcon(VaadinIcons.SEARCH);
 	}
 

@@ -4,6 +4,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 
 import ru.home.workplane.ui.enums.WinMode;
+import ru.home.workplane.util.Tools;
 
 public class SkillWindow extends AbstractWindow {
 	private static final long serialVersionUID = 1L;
@@ -12,7 +13,7 @@ public class SkillWindow extends AbstractWindow {
 	public SkillWindow(WinMode mode) {
 		super(mode, "опыт");
 		setHeight("180px");
-		setWidth("400px");
+		setWidth(Tools.SHORT_WIDTH);
 	}
 
 	@Override

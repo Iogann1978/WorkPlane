@@ -6,6 +6,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import ru.home.workplane.ui.enums.WinMode;
+import ru.home.workplane.util.Tools;
 
 public class BugWindow extends AbstractWindow {
 	private static final long serialVersionUID = 1L;
@@ -15,7 +16,7 @@ public class BugWindow extends AbstractWindow {
 	public BugWindow(WinMode mode) {
 		super(mode, "баг");
 		setHeight("220px");
-		setWidth("400px");
+		setWidth(Tools.SHORT_WIDTH);
 	}
 
 	@Override

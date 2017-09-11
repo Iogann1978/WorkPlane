@@ -8,6 +8,7 @@ import com.vaadin.ui.Component;
 
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.ui.enums.WinMode;
+import ru.home.workplane.util.Tools;
 
 public class SkillSelectWindow extends AbstractWindow {
 	private static final long serialVersionUID = 1L;
@@ -16,7 +17,7 @@ public class SkillSelectWindow extends AbstractWindow {
 	public SkillSelectWindow(WinMode mode) {
 		super(mode, "опыт");
 		setHeight("150px");
-		setWidth("400px");		
+		setWidth(Tools.SHORT_WIDTH);		
 	}
 
 	@Override

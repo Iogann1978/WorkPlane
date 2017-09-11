@@ -19,7 +19,7 @@ public class DiaryWindow extends AbstractWindow {
 	public DiaryWindow(WinMode mode) {
 		super(mode, "запись");		
 		setHeight("250px");
-		setWidth("600px");
+		setWidth(Tools.LONG_WIDTH);
 		this.mode = mode;
 	}
 

@@ -2,6 +2,9 @@
 /home/iogann/workspace/Java/WorkPlane/jar/src/main/java/ru/home/workplane/model/Bug.java
 /home/iogann/workspace/Java/WorkPlane/jar/src/main/java/ru/home/workplane/model/User.java
 /home/iogann/workspace/Java/WorkPlane/jar/src/main/java/ru/home/workplane/model/Organization.java
+/home/iogann/workspace/Java/WorkPlane/jar/src/main/java/ru/home/workplane/model/Paragraph.java
+/home/iogann/workspace/Java/WorkPlane/jar/src/main/java/ru/home/workplane/model/Content.java
+/home/iogann/workspace/Java/WorkPlane/jar/src/main/java/ru/home/workplane/model/Book.java
 /home/iogann/workspace/Java/WorkPlane/jar/src/main/java/ru/home/workplane/model/Skill.java
 /home/iogann/workspace/Java/WorkPlane/jar/src/main/java/ru/home/workplane/enums/ProjectStates.java
 /home/iogann/workspace/Java/WorkPlane/jar/src/main/java/ru/home/workplane/model/Log.java

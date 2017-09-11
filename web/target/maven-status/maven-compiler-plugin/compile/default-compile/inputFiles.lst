@@ -1,4 +1,5 @@
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/DiaryWindow.java
+/home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/view/BookPage.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/view/StartPage.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/util/Tools.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/SkillWindow.java
@@ -7,6 +8,7 @@
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/enums/WinMode.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/BugWindow.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/view/SkillPage.java
+/home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/ParagraphWindow.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/WorkPlaneUI.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/AbstractWindow.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/ObstacleWindow.java

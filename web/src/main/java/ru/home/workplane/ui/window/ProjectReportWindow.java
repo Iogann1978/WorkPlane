@@ -19,7 +19,7 @@ public class ProjectReportWindow extends AbstractWindow {
 	public ProjectReportWindow() {
 		super();
 		setCaption("Отчет по проектам");
-		setWidth("400px");
+		setWidth(Tools.SHORT_WIDTH);
 		setHeight("250px");
 	}
 	

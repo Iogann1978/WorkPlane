@@ -9,6 +9,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
+import ru.home.workplane.ui.view.BookPage;
 import ru.home.workplane.ui.view.DiaryPage;
 import ru.home.workplane.ui.view.OrganizationPage;
 import ru.home.workplane.ui.view.ProjectPage;
@@ -28,6 +29,7 @@ public class WorkPlaneUI extends UI {
 		navigator.addView("diary", new DiaryPage());
 		navigator.addView("projects", new ProjectPage());
 		navigator.addView("organization", new OrganizationPage());
+		navigator.addView("book", new BookPage());
 		navigator.navigateTo("start");
     }
 

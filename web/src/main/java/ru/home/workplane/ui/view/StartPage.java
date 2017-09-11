@@ -41,6 +41,7 @@ public class StartPage extends HorizontalLayout implements View {
         btnDiary.addClickListener(e -> getUI().getNavigator().navigateTo("diary"));
         btnProjects.addClickListener(e -> getUI().getNavigator().navigateTo("projects"));
         btnOrganization.addClickListener(e -> getUI().getNavigator().navigateTo("organization"));
+        btnBooks.addClickListener(e -> getUI().getNavigator().navigateTo("book"));
         
         BrowserFrame textAbout = new BrowserFrame();
         textAbout.setSource(new ClassResource("/about.html"));

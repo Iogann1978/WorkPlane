@@ -11,6 +11,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import ru.home.workplane.model.Diary;
 import ru.home.workplane.ui.enums.WinMode;
+import ru.home.workplane.util.Tools;
 
 public class ObstacleWindow extends AbstractWindow {
 	private static final long serialVersionUID = 1L;
@@ -19,7 +20,7 @@ public class ObstacleWindow extends AbstractWindow {
 	
 	public ObstacleWindow(WinMode mode) {
 		super(mode, "решение");
-		setWidth("400px");
+		setWidth(Tools.SHORT_WIDTH);
 		setHeight("250px");
 	}
 

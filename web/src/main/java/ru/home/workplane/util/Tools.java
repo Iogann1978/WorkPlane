@@ -6,7 +6,9 @@ import ru.home.workplane.enums.ProjectStates;
 
 public class Tools {
 	public static final String SHORT_DATE_FORMAT = "dd.MM.yyyy";
-	public static final String LONG_DATE_FORMAT = "dd.MM.yyyy HH:mm";	
+	public static final String LONG_DATE_FORMAT = "dd.MM.yyyy HH:mm";
+	public static final String SHORT_WIDTH = "400px";
+	public static final String LONG_WIDTH = "600px";
 	
 	public static VaadinIcons getResource(ProjectStates state) {
 		VaadinIcons icon = null;

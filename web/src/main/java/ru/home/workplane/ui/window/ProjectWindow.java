@@ -22,7 +22,7 @@ public class ProjectWindow extends AbstractWindow {
 
 	public ProjectWindow(WinMode mode) {
 		super(mode, "проект");
-		setHeight("400px");
+		setHeight(Tools.SHORT_WIDTH);
 		setWidth("410px");				
 	}
 

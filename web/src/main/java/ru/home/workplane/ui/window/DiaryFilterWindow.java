@@ -8,6 +8,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 
 import ru.home.workplane.model.Skill;
+import ru.home.workplane.util.Tools;
 
 public class DiaryFilterWindow extends AbstractWindow {
 	private static final long serialVersionUID = 1L;
@@ -16,7 +17,7 @@ public class DiaryFilterWindow extends AbstractWindow {
 		super();
 		setCaption("Фильтр по тэгам");
 		setHeight("150px");
-		setWidth("400px");
+		setWidth(Tools.SHORT_WIDTH);
 		setIcon(VaadinIcons.FILTER);	
 	}
 
