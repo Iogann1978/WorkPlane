@@ -7,6 +7,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
+import ru.home.workplane.util.Tools;
+
 public abstract class AbstractView extends HorizontalLayout implements View  {
 	private static final long serialVersionUID = 1L;
 	protected Button btnAdd, btnEdit, btnDel, btnExit;
@@ -21,13 +23,13 @@ public abstract class AbstractView extends HorizontalLayout implements View  {
 		btnDel = new Button("Удалить");
 		btnExit = new Button("Выйти");
 		
-		btnAdd.setWidth("150px");
+		btnAdd.setWidth(Tools.BUTTON_WIDTH);
 		btnAdd.setIcon(VaadinIcons.PLUS);
-		btnEdit.setWidth("150px");
+		btnEdit.setWidth(Tools.BUTTON_WIDTH);
 		btnEdit.setIcon(VaadinIcons.EDIT);
-		btnDel.setWidth("150px");
+		btnDel.setWidth(Tools.BUTTON_WIDTH);
 		btnDel.setIcon(VaadinIcons.MINUS);
-		btnExit.setWidth("150px");
+		btnExit.setWidth(Tools.BUTTON_WIDTH);
 		btnExit.setIcon(VaadinIcons.HOME);
 		btnExit.addClickListener(e -> getUI().getNavigator().navigateTo("start"));
 		buttonsLayout.addComponents(btnAdd, btnEdit, btnDel);

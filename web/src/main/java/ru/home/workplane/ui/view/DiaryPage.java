@@ -119,11 +119,11 @@ public class DiaryPage extends AbstractView {
 		VerticalLayout buttonLayout = new VerticalLayout();
 		Button btnFind = new Button("Поиск");
 		btnFind.setIcon(VaadinIcons.SEARCH);
-		btnFind.setWidth("150px");
+		btnFind.setWidth(Tools.BUTTON_WIDTH);
 		btnFind.addClickListener(e -> UI.getCurrent().addWindow(new DiaryFindWindow()));
 		Button btnFilter = new Button("Фильтр тэгов");
 		btnFilter.setIcon(VaadinIcons.FILTER);
-		btnFilter.setWidth("150px");
+		btnFilter.setWidth(Tools.BUTTON_WIDTH);
 		btnFilter.addClickListener(e -> UI.getCurrent().addWindow(new DiaryFilterWindow()));
 		buttonLayout.addComponents(btnFind, btnFilter);
 		buttonLayout.setMargin(false);

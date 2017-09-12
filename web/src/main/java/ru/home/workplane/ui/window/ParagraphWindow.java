@@ -1,9 +1,6 @@
 package ru.home.workplane.ui.window;
 
-import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -12,12 +9,12 @@ import ru.home.workplane.util.Tools;
 
 public class ParagraphWindow extends AbstractWindow {
 	private static final long serialVersionUID = 1L;
-	private TextField textNumber, textTitle, valuePage;
-	private Button btnPlus, btnMinus;
+	private TextField textNumber, textTitle;
+	private NumericLayout pageLayout;
 
 	public ParagraphWindow(WinMode mode) {
 		super(mode, "параграф");
-		setHeight("320px");
+		setHeight("330px");
 		setWidth(Tools.SHORT_WIDTH);
 	}
 	
@@ -29,16 +26,8 @@ public class ParagraphWindow extends AbstractWindow {
 		textTitle = new TextField("Название параграфа");
 		textTitle.setWidth("100%");
 		
-		HorizontalLayout pageLayout = new HorizontalLayout();
-		btnMinus = new Button();
-		btnMinus.setIcon(VaadinIcons.MINUS);
-		btnMinus.setHeight("30px");
-		valuePage = new TextField("Номер страницы");
-		valuePage.setValue("1");
-		btnPlus = new Button();
-		btnPlus.setIcon(VaadinIcons.PLUS);
-		btnPlus.setHeight("30px");
-		pageLayout.addComponents(btnMinus, valuePage, btnPlus);
+		pageLayout = new NumericLayout("Номер страницы");
+		pageLayout.setValue(1);
 		
 		layout.addComponents(textNumber, textTitle, pageLayout);
 		layout.setMargin(false);
@@ -49,9 +38,7 @@ public class ParagraphWindow extends AbstractWindow {
 	protected void setDeleteMode() {
 		textNumber.setReadOnly(true);
 		textTitle.setReadOnly(true);
-		valuePage.setReadOnly(true);
-		btnPlus.setEnabled(false);
-		btnMinus.setEnabled(false);
+		pageLayout.setDeleteMode();
 	}
 
 }

@@ -17,6 +17,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TreeGrid;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
 
 import ru.home.workplane.model.Book;
@@ -24,8 +25,10 @@ import ru.home.workplane.model.Content;
 import ru.home.workplane.model.Paragraph;
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.ui.enums.WinMode;
+import ru.home.workplane.ui.window.BookWindow;
 import ru.home.workplane.ui.window.ParagraphWindow;
 import ru.home.workplane.ui.window.SkillSelectWindow;
+import ru.home.workplane.util.Tools;
 
 public class BookPage extends AbstractView {
 	private static final long serialVersionUID = 1L;
@@ -33,6 +36,9 @@ public class BookPage extends AbstractView {
 
 	public BookPage() {
 		super("Книги");
+		btnEdit.addClickListener(e -> UI.getCurrent().addWindow(new BookWindow(WinMode.UPDATE)));
+		btnAdd.addClickListener(e -> UI.getCurrent().addWindow(new BookWindow(WinMode.INSERT)));
+		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new BookWindow(WinMode.DELETE)));
 	}
 
 	@Override
@@ -47,7 +53,9 @@ public class BookPage extends AbstractView {
 		gridBook.addColumn(Book::getPublisher).setCaption("Издатель");
 		gridBook.addColumn(Book::getPages).setCaption("Страниц").setRenderer(new NumberRenderer());
 		gridBook.addColumn(Book::getYear).setCaption("Год").setRenderer(new NumberRenderer());
-		gridBook.setItems(Arrays.asList(new Book("Программирование на Java", 600, "Керниган, Ричи", "Deitail", 1997)));
+		gridBook.addColumn(Book::isStudied).setCaption("Прочитал").setRenderer(flag -> Tools.getFlagResource(flag).getHtml(), new HtmlRenderer());
+		gridBook.setItems(Arrays.asList(new Book("Программирование на Java", 600, "Керниган, Ричи", "Deitail", 1997, true),
+				new Book("Java EE", 600, "Керниган, Ричи", "Deitail", 1997, false)));
 		tabSheet.addTab(gridBook, "Книги");
 		
 		VerticalLayout contentLayout = new VerticalLayout();
@@ -100,7 +108,7 @@ public class BookPage extends AbstractView {
 	protected Component getExtraButtons() {
 		VerticalLayout buttonLayout = new VerticalLayout();
 		Button btnFind = new Button("Поиск");
-		btnFind.setWidth("150px");
+		btnFind.setWidth(Tools.BUTTON_WIDTH);
 		buttonLayout.addComponent(btnFind);
 		buttonLayout.setMargin(false);
 		return buttonLayout;

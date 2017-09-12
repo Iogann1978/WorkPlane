@@ -241,9 +241,9 @@ public class ProjectPage extends AbstractView {
 		VerticalLayout buttonLayout = new VerticalLayout();
 		Button btnView = new Button("Просмотреть");
 		Button btnReport = new Button("Отчёт");
-		btnView.setWidth("150px");
+		btnView.setWidth(Tools.BUTTON_WIDTH);
 		btnView.setIcon(VaadinIcons.BROWSER);
-		btnReport.setWidth("150px");
+		btnReport.setWidth(Tools.BUTTON_WIDTH);
 		btnReport.setIcon(VaadinIcons.PRINT);
 		btnReport.addClickListener(e -> UI.getCurrent().addWindow(new ProjectReportWindow()));
 		buttonLayout.addComponents(btnView, btnReport);

@@ -9,6 +9,7 @@ public class Tools {
 	public static final String LONG_DATE_FORMAT = "dd.MM.yyyy HH:mm";
 	public static final String SHORT_WIDTH = "400px";
 	public static final String LONG_WIDTH = "600px";
+	public static final String BUTTON_WIDTH = "150px";
 	
 	public static VaadinIcons getResource(ProjectStates state) {
 		VaadinIcons icon = null;
@@ -26,6 +27,16 @@ public class Tools {
 			icon = VaadinIcons.TRASH;
 		} else {
 			icon = VaadinIcons.OFFICE;
+		}
+		return icon;
+	}
+
+	public static VaadinIcons getFlagResource(Boolean flag) {
+		VaadinIcons icon = null;
+		if(flag) {
+			icon = VaadinIcons.CHECK_SQUARE_O;
+		} else {
+			icon = VaadinIcons.THIN_SQUARE;
 		}
 		return icon;
 	}

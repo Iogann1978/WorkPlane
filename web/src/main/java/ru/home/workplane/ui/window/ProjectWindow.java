@@ -1,7 +1,5 @@
 package ru.home.workplane.ui.window;
 
-import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
@@ -15,10 +13,10 @@ import ru.home.workplane.util.Tools;
 
 public class ProjectWindow extends AbstractWindow {
 	private static final long serialVersionUID = 1L;
-	private TextField textName, valuePercent;
+	private TextField textName;
 	private DateField dateStart, dateEnd;
-	private Button btnMinus, btnPlus;
 	private ComboBox<ProjectStates> cmbState;
+	private NumericLayout percentLayout;
 
 	public ProjectWindow(WinMode mode) {
 		super(mode, "проект");
@@ -41,16 +39,8 @@ public class ProjectWindow extends AbstractWindow {
 		dateEnd.setWidth("50%");
 		datesLayout.addComponents(dateStart, dateEnd);
 		
-		HorizontalLayout percentLayout = new HorizontalLayout();
-		btnMinus = new Button();
-		btnMinus.setIcon(VaadinIcons.MINUS);
-		btnMinus.setHeight("30px");
-		valuePercent = new TextField("Процентов выполнено");
-		valuePercent.setValue("0%");
-		btnPlus = new Button();
-		btnPlus.setIcon(VaadinIcons.PLUS);
-		btnPlus.setHeight("30px");
-		percentLayout.addComponents(btnMinus, valuePercent, btnPlus);
+		percentLayout = new NumericLayout("Процентов выполнено");
+		percentLayout.setValue(0);
 		
 		cmbState = new ComboBox<>();
 		cmbState.setCaption("Состояние проекта");
@@ -71,9 +61,8 @@ public class ProjectWindow extends AbstractWindow {
 		textName.setReadOnly(true);
 		dateStart.setReadOnly(true);
 		dateEnd.setReadOnly(true);
-		btnPlus.setEnabled(false);
-		btnMinus.setEnabled(false);
 		cmbState.setReadOnly(true);
+		percentLayout.setDeleteMode();
 	}
 
 }

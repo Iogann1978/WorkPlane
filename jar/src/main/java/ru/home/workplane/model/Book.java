@@ -14,19 +14,21 @@ public class Book implements Serializable {
 	private int year;
 	private Set<Skill> skillList;
 	private Content content;
+	private boolean studied;
 	
 	public Book() {
 		super();
 		skillList = new HashSet<>();
 	}
 
-	public Book(String title, int pages, String author, String publisher, int year) {
+	public Book(String title, int pages, String author, String publisher, int year, boolean studied) {
 		super();
 		this.title = title;
 		this.pages = pages;
 		this.author = author;
 		this.publisher = publisher;
 		this.year = year;
+		this.studied = studied;
 	}
 
 	public long getId() {
@@ -91,5 +93,13 @@ public class Book implements Serializable {
 
 	public void setContent(Content content) {
 		this.content = content;
+	}
+
+	public boolean isStudied() {
+		return studied;
+	}
+
+	public void setStudied(boolean studied) {
+		this.studied = studied;
 	}
 }
