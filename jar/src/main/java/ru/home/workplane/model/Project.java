@@ -5,20 +5,40 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
 import ru.home.workplane.enums.ProjectStates;
 
+@Entity
 public class Project implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@Id
 	private long id;
 	private String name;
+	@Column(columnDefinition = "LONGVARCHAR")
 	private String description;
 	private Date dateStart, dateEnd;
 	private Double percent;
 	private ProjectStates state;
+	@ManyToMany
+	@JoinTable(name = "LINK_PROJECT_SKILL", joinColumns = {@JoinColumn(name = "PROJECT_ID")}, inverseJoinColumns = {@JoinColumn(name = "SKILL_ID")})
 	private Set<Skill> skillList;
+	@OneToMany(mappedBy="project")
 	private Set<Bug> bugList;
+	@OneToMany(mappedBy="project")
 	private Set<Log> logList;
+	@OneToMany(mappedBy="project")
 	private Set<Diary> obstacleList;
+	@ManyToOne
+	@JoinColumn(name="ORGANIZATION_ID")
+	private Organization organization;
 	
 	public Project(String name, Date dateStart, Date dateEnd, Double percent, ProjectStates state) {
 		super();		
@@ -27,6 +47,7 @@ public class Project implements Serializable {
 		this.dateEnd = dateEnd;
 		this.percent = percent;
 		this.state = state;
+		this.id = 0L;
 	}
 
 	public Project(Organization organization) {
@@ -36,6 +57,7 @@ public class Project implements Serializable {
 		this.dateEnd = organization.getDateEnd();
 		this.percent = 0.0d;
 		this.state = ProjectStates.ORGANIZATION;
+		this.id = 0L;
 	}
 	
 	public Project() {
@@ -44,6 +66,7 @@ public class Project implements Serializable {
 		bugList = new HashSet<>();
 		logList = new HashSet<>();
 		obstacleList = new HashSet<>();
+		id = 0L;
 	}
 	
 	public long getId() {
@@ -136,5 +159,13 @@ public class Project implements Serializable {
 
 	public void setObstacleList(Set<Diary> obstacleList) {
 		this.obstacleList = obstacleList;
+	}
+
+	public Organization getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(Organization organization) {
+		this.organization = organization;
 	}
 }

@@ -5,16 +5,29 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+@Entity
 public class Organization implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@Id
 	private long id;
 	private String name;
 	private Date dateStart, dateEnd;
+	@OneToMany
 	private Set<Project> projectList;
+	@ManyToOne
+	@JoinColumn(name="USER_ID")
+	private User user;
 	
 	public Organization() {
 		super();
 		projectList = new HashSet<>();
+		id = 0L;
 	}
 
 	public Organization(String name, Date dateStart, Date dateEnd) {
@@ -22,6 +35,7 @@ public class Organization implements Serializable {
 		this.name = name;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
+		this.id = 0L;
 	}
 
 	public long getId() {
@@ -67,5 +81,13 @@ public class Organization implements Serializable {
 
 	public void setProjectList(Set<Project> projectList) {
 		this.projectList = projectList;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

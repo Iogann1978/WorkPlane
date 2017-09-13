@@ -4,12 +4,21 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Paragraph implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private long id;
+	@XmlAttribute
 	private String number;
+	@XmlAttribute
 	private String title;
+	@XmlAttribute
 	private int page;
+	@XmlElement
 	private Set<Paragraph> childs;
 	
 	public Paragraph() {
@@ -24,14 +33,6 @@ public class Paragraph implements Serializable {
 		this.page = page;
 	}
 	
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	public String getNumber() {
 		return number;
 	}

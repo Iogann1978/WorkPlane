@@ -4,21 +4,40 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
+@Entity
+@NamedQueries({
+@NamedQuery(name="Book.findAll", query="SELECT b FROM Book b ORDER BY b.id"),
+@NamedQuery(name="Book.find", query="SELECT b FROM Book b WHERE UPPER(b.content) LIKE ?1 ORDER BY b.id")
+})
 public class Book implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@Id
 	private long id;
 	private String title;
 	private int pages;
 	private String author;
 	private String publisher;
 	private int year;
+	@ManyToMany
 	private Set<Skill> skillList;
-	private Content content;
+	private String content;
 	private boolean studied;
+	@ManyToOne
+	@JoinColumn(name="USER_ID")
+	private User user;
 	
 	public Book() {
 		super();
 		skillList = new HashSet<>();
+		id = 0L;
 	}
 
 	public Book(String title, int pages, String author, String publisher, int year, boolean studied) {
@@ -29,6 +48,7 @@ public class Book implements Serializable {
 		this.publisher = publisher;
 		this.year = year;
 		this.studied = studied;
+		this.id = 0L;
 	}
 
 	public long getId() {
@@ -87,11 +107,11 @@ public class Book implements Serializable {
 		this.skillList = skillList;
 	}
 
-	public Content getContent() {
+	public String getContent() {
 		return content;
 	}
 
-	public void setContent(Content content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 
@@ -101,5 +121,13 @@ public class Book implements Serializable {
 
 	public void setStudied(boolean studied) {
 		this.studied = studied;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

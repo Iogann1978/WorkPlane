@@ -64,6 +64,8 @@ public class ProjectPage extends AbstractView {
 		items.add(new Organization("Банк", new Date(), new Date()));
 		
 		VerticalSplitPanel gridPanel = new VerticalSplitPanel();
+		
+		VerticalLayout projectLayout = new VerticalLayout();
 		TreeGrid<Project> grid = new TreeGrid<>();
 		grid.setCaption("Список проектов");
 		grid.setWidth("100%");
@@ -93,6 +95,8 @@ public class ProjectPage extends AbstractView {
 		grid.addColumn(Project::getDateStart).setCaption("Дата начала").setRenderer(new DateRenderer(new SimpleDateFormat(Tools.SHORT_DATE_FORMAT)));
 		grid.addColumn(Project::getDateEnd).setCaption("Дата окончания").setRenderer(new DateRenderer(new SimpleDateFormat(Tools.SHORT_DATE_FORMAT)));
 		grid.addColumn(Project::getPercent).setCaption("Процент выполнения").setRenderer(new ProgressBarRenderer());
+		projectLayout.addComponent(grid);
+		projectLayout.setMargin(false);
 		
 		Set<Skill> skillItems = new HashSet<>();
 		skillItems.add(new Skill("Java"));
@@ -224,9 +228,7 @@ public class ProjectPage extends AbstractView {
 				);	
 		
 		tabSheet.setWidth("100%");
-		//tabSheet.setHeight("100%");
-		gridPanel.addComponents(grid, tabSheet);
-		//gridLayout.setSizeFull();
+		gridPanel.addComponents(projectLayout, tabSheet);
 		
 		Binder<Project> binder = new Binder<>();
 		binder.bind(textEdit, project -> project.getDescription(), (project, description) -> project.setDescription(description));

@@ -17,6 +17,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TreeGrid;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
 
@@ -42,9 +43,10 @@ public class BookPage extends AbstractView {
 	}
 
 	@Override
-	protected Component getCentral() {		
-		TabSheet tabSheet = new TabSheet();
+	protected Component getCentral() {
+		VerticalSplitPanel gridPanel = new VerticalSplitPanel();
 		
+		VerticalLayout bookLayout = new VerticalLayout();
 		Grid<Book> gridBook = new Grid<>();
 		gridBook.setCaption("Список книг");
 		gridBook.setWidth("100%");
@@ -56,7 +58,10 @@ public class BookPage extends AbstractView {
 		gridBook.addColumn(Book::isStudied).setCaption("Прочитал").setRenderer(flag -> Tools.getFlagResource(flag).getHtml(), new HtmlRenderer());
 		gridBook.setItems(Arrays.asList(new Book("Программирование на Java", 600, "Керниган, Ричи", "Deitail", 1997, true),
 				new Book("Java EE", 600, "Керниган, Ричи", "Deitail", 1997, false)));
-		tabSheet.addTab(gridBook, "Книги");
+		bookLayout.addComponent(gridBook);
+		bookLayout.setMargin(false);
+		
+		TabSheet tabSheet = new TabSheet();
 		
 		VerticalLayout contentLayout = new VerticalLayout();
 		TreeGrid<Paragraph> gridContent = new TreeGrid<>();
@@ -101,7 +106,8 @@ public class BookPage extends AbstractView {
 		tagsLayout.addComponents(tagsList, buttonTagsLayout);
 		tabSheet.addTab(tagsLayout, "Список тэгов", VaadinIcons.TAGS);
 
-		return tabSheet;
+		gridPanel.addComponents(bookLayout, tabSheet);
+		return gridPanel;
 	}
 
 	@Override

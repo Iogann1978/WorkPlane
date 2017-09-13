@@ -19,6 +19,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<vaadin.version>8.1.0</vaadin.version>
+		<jetty.version>9.4.6.v20170531</jetty.version>
 	</properties>
 
 	<dependencyManagement>
@@ -40,7 +41,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 			<dependency>
     			<groupId>org.eclipse.jetty</groupId>
     			<artifactId>jetty-server</artifactId>
-    			<version>9.4.6.v20170531</version>
+    			<version>${jetty.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -50,7 +51,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 			<plugin>
     			<groupId>org.eclipse.jetty</groupId>
     			<artifactId>jetty-maven-plugin</artifactId>
-    			<version>9.4.6.v20170531</version>
+    			<version>${jetty.version}</version>
 				<configuration>
 					<webAppSourceDirectory>${basedir}/web/target</webAppSourceDirectory>
 					<war>${basedir}/web/target/WorkPlane-web.war</war>

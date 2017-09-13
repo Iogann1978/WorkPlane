@@ -48,6 +48,8 @@ public class DiaryPage extends AbstractView {
 	@Override
 	protected Component getCentral() {
 		VerticalSplitPanel gridPanel = new VerticalSplitPanel();
+		
+		VerticalLayout diaryLayout = new VerticalLayout();
 		Grid<Diary> grid = new Grid<>();
 		grid.setCaption("Список записей");
 		grid.setWidth("100%");
@@ -59,6 +61,8 @@ public class DiaryPage extends AbstractView {
 		skillItems.add(new Skill("Java"));
 		diaryItems.get(0).setSkillList(skillItems);
 		grid.setItems(diaryItems);
+		diaryLayout.addComponent(grid);
+		diaryLayout.setMargin(false);
 		
 		TabSheet tabSheet = new TabSheet();
 		BrowserFrame tabView = new BrowserFrame();
@@ -110,7 +114,7 @@ public class DiaryPage extends AbstractView {
 		binder.readBean(diaryItems.get(0));
 		tabView.setSource(new StreamResource(() -> new ByteArrayInputStream(diaryItems.get(0).getContent().getBytes()), "temp.html"));
 		
-		gridPanel.addComponents(grid, tabSheet);
+		gridPanel.addComponents(diaryLayout, tabSheet);
 		return gridPanel;
 	}
 

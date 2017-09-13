@@ -2,21 +2,33 @@ package ru.home.workplane.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class Bug implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@Id
 	private long id;
 	private String name;
 	private boolean flag;
+	@ManyToOne
+	@JoinColumn(name="PROJECT_ID")
+	private Project project;
 	
 	public Bug() {
 		super();
 		flag = true;
+		id = 0L;
 	}
 
 	public Bug(String name, Boolean flag) {
 		super();
 		this.name = name;
 		this.flag = flag;
+		this.id = 0L;
 	}
 
 	public long getId() {
@@ -45,5 +57,13 @@ public class Bug implements Serializable {
 
 	public Bug getBug() {
 		return this;
+	}
+
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
 	}
 }
