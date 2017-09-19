@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -14,20 +15,24 @@ import javax.persistence.ManyToOne;
 public class Skill implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue
 	private long id;
 	private String title;
 	@ManyToMany(mappedBy = "skillList")
 	private Set<Diary> diaryList;
 	@ManyToOne
-	@JoinColumn(name="USER_ID")
+	@JoinColumn(name="user_id")
 	private User user;
 	@ManyToMany(mappedBy = "skillList")
 	private Set<Project> projectList;
+	@ManyToMany(mappedBy = "skillList")
+	private Set<Book> bookList;
 	
 	public Skill() {
 		super();
 		diaryList = new HashSet<>();
 		projectList = new HashSet<>();
+		bookList = new HashSet<>();
 		id = 0L;
 	}
 
@@ -88,5 +93,13 @@ public class Skill implements Serializable {
 
 	public void setProjectList(Set<Project> projectList) {
 		this.projectList = projectList;
+	}
+
+	public Set<Book> getBookList() {
+		return bookList;
+	}
+
+	public void setBookList(Set<Book> bookList) {
+		this.bookList = bookList;
 	}
 }

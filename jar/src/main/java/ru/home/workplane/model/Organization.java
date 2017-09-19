@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,13 +17,14 @@ import javax.persistence.OneToMany;
 public class Organization implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue
 	private long id;
 	private String name;
 	private Date dateStart, dateEnd;
-	@OneToMany
+	@OneToMany(mappedBy="organization", cascade = CascadeType.ALL)
 	private Set<Project> projectList;
 	@ManyToOne
-	@JoinColumn(name="USER_ID")
+	@JoinColumn(name="user_id")
 	private User user;
 	
 	public Organization() {

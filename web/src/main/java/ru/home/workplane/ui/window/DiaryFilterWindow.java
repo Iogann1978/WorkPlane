@@ -30,8 +30,7 @@ public class DiaryFilterWindow extends AbstractWindow {
 		List<Skill> items = new ArrayList<>();
 		items.add(new Skill("Все записи"));
 		cmbSkill.setItems(items);
-		cmbSkill.setSelectedItem(items.get(0));
-			
+		cmbSkill.setSelectedItem(items.get(0));			
 		return cmbSkill;
 	}
 

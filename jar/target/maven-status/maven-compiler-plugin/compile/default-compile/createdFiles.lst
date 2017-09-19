@@ -5,6 +5,7 @@ ru/home/workplane/model/Skill.class
 ru/home/workplane/model/Paragraph.class
 ru/home/workplane/model/Log.class
 ru/home/workplane/service/SkillService.class
+ru/home/workplane/beans/Beans.class
 ru/home/workplane/service/ProjectService.class
 ru/home/workplane/service/AbstractService.class
 ru/home/workplane/model/Organization.class

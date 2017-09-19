@@ -8,21 +8,21 @@
         <version>1.0-SNAPSHOT</version> 
     </parent> 
 
-  <groupId>ru.home.workplane</groupId>
-  <artifactId>WorkPlane-web</artifactId>
-  <packaging>war</packaging>
+	<artifactId>WorkPlane-web</artifactId>
+	<packaging>war</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<vaadin.plugin.version>8.1.0</vaadin.plugin.version>
 	</properties>
 
-  <dependencies>
+	<dependencies>
     	<dependency> 
         	<groupId>ru.home.workplane</groupId> 
         	<artifactId>WorkPlane-jar</artifactId> 
         	<version>${project.version}</version> 
     	</dependency> 
+
 
 		<dependency>
     		<groupId>javax.servlet</groupId>
@@ -57,7 +57,7 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency-->
-  </dependencies>
+	</dependencies>
 
   <build>
     <finalName>${project.artifactId}</finalName>

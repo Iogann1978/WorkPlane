@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -24,19 +25,20 @@ import javax.persistence.NamedQuery;
 public class Diary implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue
 	private long id;
 	private String title;
 	private Date date;
 	@Column(columnDefinition = "LONGVARCHAR")
 	private String content;
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "LINK_DIARY_SKILL", joinColumns = {@JoinColumn(name = "DIARY_ID")}, inverseJoinColumns = {@JoinColumn(name = "SKILL_ID")})
+	@JoinTable(name = "link_diary_skill", joinColumns = {@JoinColumn(name = "diary_id")}, inverseJoinColumns = {@JoinColumn(name = "skill_id")})
 	private Set<Skill> skillList;
 	@ManyToOne
-	@JoinColumn(name="USER_ID")
+	@JoinColumn(name="user_id")
 	private User user;	
 	@ManyToOne
-	@JoinColumn(name="PROJECT_ID")
+	@JoinTable(name = "link_diary_project", joinColumns = {@JoinColumn(name = "diary_id")}, inverseJoinColumns = {@JoinColumn(name = "project_id")})
 	private Project project;
 	
 	public Diary() {

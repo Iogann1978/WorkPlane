@@ -26,6 +26,8 @@ import ru.home.workplane.model.Content;
 import ru.home.workplane.model.Paragraph;
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.ui.enums.WinMode;
+import ru.home.workplane.ui.window.BookFilterWindow;
+import ru.home.workplane.ui.window.BookFindWindow;
 import ru.home.workplane.ui.window.BookWindow;
 import ru.home.workplane.ui.window.ParagraphWindow;
 import ru.home.workplane.ui.window.SkillSelectWindow;
@@ -115,33 +117,52 @@ public class BookPage extends AbstractView {
 		VerticalLayout buttonLayout = new VerticalLayout();
 		Button btnFind = new Button("Поиск");
 		btnFind.setWidth(Tools.BUTTON_WIDTH);
-		buttonLayout.addComponent(btnFind);
+		btnFind.addClickListener(e -> UI.getCurrent().addWindow(new BookFindWindow()));		
+		Button btnFilter = new Button("Фильтр тэгов");
+		btnFilter.setIcon(VaadinIcons.FILTER);
+		btnFilter.setWidth(Tools.BUTTON_WIDTH);
+		btnFilter.addClickListener(e -> UI.getCurrent().addWindow(new BookFilterWindow()));		
+		buttonLayout.addComponents(btnFind, btnFilter);
 		buttonLayout.setMargin(false);
 		return buttonLayout;
 	}
 
 	private void addParagraph(Paragraph parent, Paragraph child) {
 		data.addItem(parent, child);
-		if(child != null && child.getChilds() != null && child.getChilds().size() > 0) {
-			child.getChilds().stream().forEach(p -> addParagraph(child, p));
+		if(child != null && child.getParagraphList() != null && child.getParagraphList().size() > 0) {
+			child.getParagraphList().stream().forEach(p -> addParagraph(child, p));
 		}
 	}
 	
 	private Content getContent() {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+		"<content>" +
+	    "<paragraphList number=\"1\" title=\"Параграф 1\" page=\"1\">" +
+	        "<paragraphList number=\"1.2\" title=\"Параграф 1.2\" page=\"3\"/>" +
+	        "<paragraphList number=\"1.1\" title=\"Параграф 1.1\" page=\"2\"/>" +
+	    "</paragraphList>" +
+	    "<paragraphList number=\"2\" title=\"Параграф 2\" page=\"20\">" +
+	        "<paragraphList number=\"2.2\" title=\"Параграф 2.2\" page=\"13\"/>" +
+	        "<paragraphList number=\"2.1\" title=\"Параграф 2.1\" page=\"12\"/>" +
+	    "</paragraphList>" +
+	    "</content>";
+
 		Content content = new Content();
+		content.unmarshal(xml);
+		/*
 		List<Paragraph> pList = new ArrayList<>();
 		pList.add(new Paragraph("1", "Один", 1));
 		pList.add(new Paragraph("2", "Два", 10));
 		List<Paragraph> cList1 = new ArrayList<>();
 		cList1.add(new Paragraph("1.1", "Один", 2));
 		cList1.add(new Paragraph("1.2", "Два", 3));
-		pList.get(0).setChilds(cList1.stream().collect(Collectors.toSet()));
+		pList.get(0).setParagraphList(cList1.stream().collect(Collectors.toSet()));
 		List<Paragraph> cList2 = new ArrayList<>();
 		cList2.add(new Paragraph("2.1", "Один", 11));
 		cList2.add(new Paragraph("2.2", "Два", 12));
-		pList.get(1).setChilds(cList2.stream().collect(Collectors.toSet()));
+		pList.get(1).setParagraphList(cList2.stream().collect(Collectors.toSet()));
 		content.setParagraphList(pList.stream().collect(Collectors.toSet()));
-		
+		*/
 		return content;
 	}
 }

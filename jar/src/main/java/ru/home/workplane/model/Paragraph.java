@@ -19,11 +19,11 @@ public class Paragraph implements Serializable {
 	@XmlAttribute
 	private int page;
 	@XmlElement
-	private Set<Paragraph> childs;
+	private Set<Paragraph> paragraphList;
 	
 	public Paragraph() {
 		super();
-		childs = new HashSet<>();
+		paragraphList = new HashSet<>();
 	}
 
 	public Paragraph(String number, String title, int page) {
@@ -57,11 +57,11 @@ public class Paragraph implements Serializable {
 		this.page = page;
 	}
 
-	public Set<Paragraph> getChilds() {
-		return childs;
+	public Set<Paragraph> getParagraphList() {
+		return paragraphList;
 	}
 
-	public void setChilds(Set<Paragraph> childs) {
-		this.childs = childs;
+	public void setParagraphList(Set<Paragraph> paragraphList) {
+		this.paragraphList = paragraphList;
 	}
 }

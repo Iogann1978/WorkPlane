@@ -4,9 +4,13 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -20,18 +24,21 @@ import javax.persistence.NamedQuery;
 public class Book implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue
 	private long id;
 	private String title;
 	private int pages;
 	private String author;
 	private String publisher;
 	private int year;
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "link_book_skill", joinColumns = {@JoinColumn(name = "book_id")}, inverseJoinColumns = {@JoinColumn(name = "skill_id")})
 	private Set<Skill> skillList;
+	@Column(columnDefinition = "LONGVARCHAR")
 	private String content;
 	private boolean studied;
 	@ManyToOne
-	@JoinColumn(name="USER_ID")
+	@JoinColumn(name="user_id")
 	private User user;
 	
 	public Book() {

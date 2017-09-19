@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -20,6 +21,7 @@ import ru.home.workplane.enums.ProjectStates;
 public class Project implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue
 	private long id;
 	private String name;
 	@Column(columnDefinition = "LONGVARCHAR")
@@ -28,7 +30,7 @@ public class Project implements Serializable {
 	private Double percent;
 	private ProjectStates state;
 	@ManyToMany
-	@JoinTable(name = "LINK_PROJECT_SKILL", joinColumns = {@JoinColumn(name = "PROJECT_ID")}, inverseJoinColumns = {@JoinColumn(name = "SKILL_ID")})
+	@JoinTable(name = "link_project_skill", joinColumns = {@JoinColumn(name = "project_id")}, inverseJoinColumns = {@JoinColumn(name = "skill_id")})
 	private Set<Skill> skillList;
 	@OneToMany(mappedBy="project")
 	private Set<Bug> bugList;
@@ -37,7 +39,7 @@ public class Project implements Serializable {
 	@OneToMany(mappedBy="project")
 	private Set<Diary> obstacleList;
 	@ManyToOne
-	@JoinColumn(name="ORGANIZATION_ID")
+	@JoinColumn(name="organization_id")
 	private Organization organization;
 	
 	public Project(String name, Date dateStart, Date dateEnd, Double percent, ProjectStates state) {

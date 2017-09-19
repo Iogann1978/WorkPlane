@@ -6,15 +6,20 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
+@NamedQuery(name="User.find", query="SELECT u FROM User u WHERE u.login = ?1")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue
 	private long id;
 	private String login;
+	private String passHash;
 	@OneToMany(mappedBy="user", cascade = CascadeType.ALL)
 	private Set<Skill> skillList;
 	@OneToMany(mappedBy="user", cascade = CascadeType.ALL)
@@ -78,5 +83,13 @@ public class User implements Serializable {
 
 	public void setLogin(String login) {
 		this.login = login;
+	}
+
+	public String getPassHash() {
+		return passHash;
+	}
+
+	public void setPassHash(String passHash) {
+		this.passHash = passHash;
 	}
 }
