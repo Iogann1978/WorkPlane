@@ -47,7 +47,7 @@ public class Book implements Serializable {
 		id = 0L;
 	}
 
-	public Book(String title, int pages, String author, String publisher, int year, boolean studied) {
+	public Book(String title, int pages, String author, String publisher, int year, boolean studied, User user) {
 		super();
 		this.title = title;
 		this.pages = pages;
@@ -55,6 +55,7 @@ public class Book implements Serializable {
 		this.publisher = publisher;
 		this.year = year;
 		this.studied = studied;
+		this.user = user;
 		this.id = 0L;
 	}
 

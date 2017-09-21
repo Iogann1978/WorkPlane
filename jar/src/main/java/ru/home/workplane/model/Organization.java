@@ -33,11 +33,12 @@ public class Organization implements Serializable {
 		id = 0L;
 	}
 
-	public Organization(String name, Date dateStart, Date dateEnd) {
+	public Organization(String name, Date dateStart, Date dateEnd, User user) {
 		super();
 		this.name = name;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
+		this.user = user;
 		this.id = 0L;
 	}
 

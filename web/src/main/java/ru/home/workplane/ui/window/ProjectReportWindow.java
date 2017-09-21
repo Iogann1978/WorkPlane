@@ -41,7 +41,7 @@ public class ProjectReportWindow extends AbstractWindow {
 		cmbOrganization.setEmptySelectionAllowed(false);
 		cmbOrganization.setTextInputAllowed(false);
 		Set<Organization> items = new HashSet<>();
-		items.add(new Organization("Банк", new Date(), new Date()));
+		items.add(new Organization("Банк", new Date(), new Date(), null));
 		cmbOrganization.setItems(items);
 		cmbOrganization.setEmptySelectionAllowed(true);
 		cmbOrganization.setEmptySelectionCaption("Все организации");		

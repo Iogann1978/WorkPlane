@@ -58,8 +58,8 @@ public class BookPage extends AbstractView {
 		gridBook.addColumn(Book::getPages).setCaption("Страниц").setRenderer(new NumberRenderer());
 		gridBook.addColumn(Book::getYear).setCaption("Год").setRenderer(new NumberRenderer());
 		gridBook.addColumn(Book::isStudied).setCaption("Прочитал").setRenderer(flag -> Tools.getFlagResource(flag).getHtml(), new HtmlRenderer());
-		gridBook.setItems(Arrays.asList(new Book("Программирование на Java", 600, "Керниган, Ричи", "Deitail", 1997, true),
-				new Book("Java EE", 600, "Керниган, Ричи", "Deitail", 1997, false)));
+		gridBook.setItems(Arrays.asList(new Book("Программирование на Java", 600, "Керниган, Ричи", "Deitail", 1997, true, null),
+				new Book("Java EE", 600, "Керниган, Ричи", "Deitail", 1997, false, null)));
 		bookLayout.addComponent(gridBook);
 		bookLayout.setMargin(false);
 		
@@ -93,7 +93,7 @@ public class BookPage extends AbstractView {
 		
 		VerticalLayout tagsLayout = new VerticalLayout();
 		ListSelect<Skill> tagsList = new ListSelect<>();
-		tagsList.setItems(Arrays.asList(new Skill("Java")));
+		tagsList.setItems(Arrays.asList(new Skill("Java", null)));
 		tagsList.setCaption("Тэги к книге");
 		tagsList.setWidth("100%");
 		tagsList.setHeight("100%");

@@ -2,7 +2,6 @@ ru/home/workplane/ui/window/ProjectReportWindow.class
 ru/home/workplane/ui/window/NumericLayout.class
 ru/home/workplane/ui/window/SkillSelectWindow.class
 ru/home/workplane/ui/view/ProjectPage.class
-ru/home/workplane/ui/view/LoginPage.class
 ru/home/workplane/ui/window/AbstractWindow$1.class
 ru/home/workplane/ui/window/DiaryFilterWindow.class
 ru/home/workplane/ui/window/LogWindow.class
@@ -18,6 +17,7 @@ ru/home/workplane/ui/window/BookFilterWindow.class
 ru/home/workplane/ui/view/OrganizationPage.class
 ru/home/workplane/ui/window/BugWindow.class
 ru/home/workplane/ui/view/SkillPage.class
+ru/home/workplane/ui/window/LoginWindow.class
 ru/home/workplane/ui/WorkPlaneUI$WorkPlaneUIServlet.class
 ru/home/workplane/util/Tools.class
 ru/home/workplane/ui/window/DiaryFindWindow.class

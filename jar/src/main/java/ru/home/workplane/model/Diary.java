@@ -47,11 +47,12 @@ public class Diary implements Serializable {
 		id = 0L;
 	}
 
-	public Diary(String title, Date date, String content) {
+	public Diary(String title, Date date, String content, User user) {
 		super();
 		this.title = title;
 		this.date = date;
 		this.content = content;
+		this.user = user;
 		this.id = 0L;
 	}
 

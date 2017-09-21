@@ -33,8 +33,8 @@ public class OrganizationPage extends AbstractView {
 		grid.setWidth("100%");
 		grid.setHeight("100%");
 		List<Organization> list = new ArrayList<>();
-		list.add(new Organization("Завод", new Date(), new Date()));
-		list.add(new Organization("Банк", new Date(), new Date()));
+		list.add(new Organization("Завод", new Date(), new Date(), null));
+		list.add(new Organization("Банк", new Date(), new Date(), null));
 		grid.setItems(list);
 		grid.addColumn(Organization::getName).setCaption("Организация");
 		grid.addColumn(Organization::getDateStart).setCaption("Дата поступления").setRenderer(new DateRenderer(new SimpleDateFormat(Tools.SHORT_DATE_FORMAT)));

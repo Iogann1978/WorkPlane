@@ -56,9 +56,9 @@ public class DiaryPage extends AbstractView {
 		grid.addColumn(Diary::getDate).setCaption("Дата записи").setRenderer(new DateRenderer(new SimpleDateFormat(Tools.LONG_DATE_FORMAT)));
 		grid.addColumn(Diary::getTitle).setCaption("Название записи");
 		List<Diary> diaryItems = new ArrayList<>();
-		diaryItems.add(new Diary("Первая запись", new Date(), "<html><body><h1>Первая запись</h1></body></html>"));
+		diaryItems.add(new Diary("Первая запись", new Date(), "<html><body><h1>Первая запись</h1></body></html>", null));
 		Set<Skill> skillItems = new HashSet<>();
-		skillItems.add(new Skill("Java"));
+		skillItems.add(new Skill("Java", null));
 		diaryItems.get(0).setSkillList(skillItems);
 		grid.setItems(diaryItems);
 		diaryLayout.addComponent(grid);

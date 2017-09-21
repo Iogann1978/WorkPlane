@@ -36,9 +36,10 @@ public class Skill implements Serializable {
 		id = 0L;
 	}
 
-	public Skill(String title) {
+	public Skill(String title, User user) {
 		super();
 		this.title = title;
+		this.user = user;
 		this.id = 0L;
 	}
 

@@ -11,7 +11,6 @@
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/AbstractWindow.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/ObstacleWindow.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/DiaryFilterWindow.java
-/home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/view/LoginPage.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/LogWindow.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/ProjectReportWindow.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/DiaryWindow.java
@@ -25,3 +24,4 @@
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/BookWindow.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/view/OrganizationPage.java
 /home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/view/ProjectPage.java
+/home/iogann/workspace/Java/WorkPlane/web/src/main/java/ru/home/workplane/ui/window/LoginWindow.java

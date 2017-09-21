@@ -33,7 +33,7 @@ public class ObstacleWindow extends AbstractWindow {
 		cmbDiary.setWidth("100%");
 		cmbDiary.setEmptySelectionAllowed(false);
 		cmbDiary.setTextInputAllowed(false);
-		Diary diary = new Diary("Запись", new Date(), ""); 
+		Diary diary = new Diary("Запись", new Date(), "", null); 
 		Set<Diary> items = new HashSet<>();
 		items.add(diary);
 		cmbDiary.setItems(items);

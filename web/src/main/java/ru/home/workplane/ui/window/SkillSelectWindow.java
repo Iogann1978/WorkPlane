@@ -24,7 +24,7 @@ public class SkillSelectWindow extends AbstractWindow {
 	protected Component getCentral() {
 		ComboBox<Skill> cmbSkill = new ComboBox<>();
 		List<Skill> items = new ArrayList<>();
-		items.add(new Skill("Java"));
+		items.add(new Skill("Java", null));
 		cmbSkill.setItems(items);
 		cmbSkill.setWidth("100%");
 		cmbSkill.setSelectedItem(items.get(0));

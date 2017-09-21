@@ -11,11 +11,11 @@ import com.vaadin.ui.UI;
 
 import ru.home.workplane.ui.view.BookPage;
 import ru.home.workplane.ui.view.DiaryPage;
-import ru.home.workplane.ui.view.LoginPage;
 import ru.home.workplane.ui.view.OrganizationPage;
 import ru.home.workplane.ui.view.ProjectPage;
 import ru.home.workplane.ui.view.SkillPage;
 import ru.home.workplane.ui.view.StartPage;
+import ru.home.workplane.ui.window.LoginWindow;
 
 @Theme("valo")
 public class WorkPlaneUI extends UI {
@@ -31,8 +31,8 @@ public class WorkPlaneUI extends UI {
 		navigator.addView("projects", new ProjectPage());
 		navigator.addView("organization", new OrganizationPage());
 		navigator.addView("book", new BookPage());
-		navigator.addView("login", new LoginPage());
-		navigator.navigateTo("login");
+		navigator.navigateTo("start");
+		UI.getCurrent().addWindow(new LoginWindow());
     }
 
     @WebServlet(urlPatterns = "/*", name = "WorkPlaneUIServlet", asyncSupported = true)

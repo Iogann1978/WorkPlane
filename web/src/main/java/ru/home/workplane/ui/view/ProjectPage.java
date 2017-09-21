@@ -60,8 +60,8 @@ public class ProjectPage extends AbstractView {
 	@Override
 	protected Component getCentral() {
 		List<Organization> items = new ArrayList<>();
-		items.add(new Organization("Завод", new Date(), new Date()));
-		items.add(new Organization("Банк", new Date(), new Date()));
+		items.add(new Organization("Завод", new Date(), new Date(), null));
+		items.add(new Organization("Банк", new Date(), new Date(), null));
 		
 		VerticalSplitPanel gridPanel = new VerticalSplitPanel();
 		
@@ -99,14 +99,14 @@ public class ProjectPage extends AbstractView {
 		projectLayout.setMargin(false);
 		
 		Set<Skill> skillItems = new HashSet<>();
-		skillItems.add(new Skill("Java"));
+		skillItems.add(new Skill("Java", null));
 		Set<Bug> bugItems = new HashSet<>();
 		bugItems.add(new Bug("Баг 1", true));
 		bugItems.add(new Bug("Баг 2", false));
 		Set<Log> logItems = new HashSet<>();
 		logItems.add(new Log(new Date(), new Date(), "Первая запись"));
 		Set<Diary> obstacleItems = new HashSet<>();
-		Diary obstacle1 = new Diary("Первая запись", new Date() ,"<html><body><h1>Первая запись</h1></body></html>");
+		Diary obstacle1 = new Diary("Первая запись", new Date() ,"<html><body><h1>Первая запись</h1></body></html>", null);
 		obstacle1.setSkillList(skillItems);
 		obstacleItems.add(obstacle1);
 		project1.setSkillList(skillItems);
