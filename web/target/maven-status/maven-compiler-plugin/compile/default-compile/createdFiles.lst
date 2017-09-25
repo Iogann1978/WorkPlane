@@ -21,6 +21,7 @@ ru\home\workplane\ui\view\ProjectPage.class
 ru\home\workplane\ui\window\ObstacleWindow.class
 ru\home\workplane\ui\view\LoginPage.class
 ru\home\workplane\ui\window\BookFilterWindow.class
+ru\home\workplane\ui\window\OrganizationWindow.class
 ru\home\workplane\ui\window\ParagraphWindow.class
 ru\home\workplane\ui\window\AbstractWindow$1.class
 ru\home\workplane\ui\window\AbstractWindow.class
