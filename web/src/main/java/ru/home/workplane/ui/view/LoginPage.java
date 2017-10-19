@@ -33,7 +33,7 @@ public class LoginPage extends VerticalLayout implements View {
 				getUI().getNavigator().navigateTo("start");
 			}
 			else {
-				Notification.show("Неправильно имя пользователя или пароль", Type.ERROR_MESSAGE);
+				Notification.show("Неправильное имя пользователя или пароль", Type.ERROR_MESSAGE);
 				UI.getCurrent().close();
 			}
 		});

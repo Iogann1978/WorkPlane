@@ -21,7 +21,7 @@ public class LoginWindow extends AbstractWindow {
 		setCaption("Вход");
 		setHeight("250px");
 		setWidth(Tools.SHORT_WIDTH);
-		setIcon(VaadinIcons.USER);			
+		setIcon(VaadinIcons.USER);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class LoginWindow extends AbstractWindow {
 				close();
 			}
 			else {
-				Notification.show("Неправильно имя пользователя или пароль", Type.ERROR_MESSAGE);
+				Notification.show("Неправильное имя пользователя или пароль", Type.ERROR_MESSAGE);
 				UI.getCurrent().close();
 			}
 		});

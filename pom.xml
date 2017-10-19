@@ -39,9 +39,19 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 			</dependency>
 
 			<dependency>
-    			<groupId>org.eclipse.jetty</groupId>
-    			<artifactId>jetty-server</artifactId>
-    			<version>${jetty.version}</version>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-server</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-security</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-websocket</artifactId>
+				<version>8.2.0.v20160908</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -49,12 +59,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 	<build>
 		<plugins>
 			<plugin>
-    			<groupId>org.eclipse.jetty</groupId>
-    			<artifactId>jetty-maven-plugin</artifactId>
-    			<version>${jetty.version}</version>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
 				<configuration>
 					<webAppSourceDirectory>${basedir}/web/target</webAppSourceDirectory>
 					<war>${basedir}/web/target/WorkPlane-web.war</war>
+					<webAppXml>${basedir}/web/src/main/webapp/WEB-INF/jetty-web.xml</webAppXml>
 				</configuration>
 			</plugin>
 		</plugins>
