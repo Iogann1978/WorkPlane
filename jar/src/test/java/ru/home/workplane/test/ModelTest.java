@@ -39,8 +39,8 @@ public class ModelTest {
 		
 		User user = new User();
 		user.setLogin("admin");
-		byte[] digest = Beans.getHashPass("123456");
-		user.setPassHash(new String(digest));
+		String hexDigest = Beans.getHashPass("123456");
+		user.setPassHash(hexDigest);
 		
 		List<Skill> skillList = new ArrayList<>();
 		skillList.addAll(Arrays.asList(new Skill("Java", user), new Skill("JavaScript", user), 
@@ -98,8 +98,8 @@ public class ModelTest {
 		assertTrue(nuser.getOrganizationList().size() > 0);
 		
 		assertTrue(nuser.getLogin().equals("admin"));
-		byte[] ndigest = Beans.getHashPass("123456");
-		assertTrue(nuser.getPassHash().equals(new String(ndigest)));
+		String nhexDigest = Beans.getHashPass("123456");
+		assertTrue(nuser.getPassHash().equals(nhexDigest));
 		
 		((ClassPathXmlApplicationContext)context).close();
 	}

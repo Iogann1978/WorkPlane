@@ -5,6 +5,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -26,11 +28,11 @@ public class Beans {
 			return false;
 		}
 		
-		byte[] digest = getHashPass(pass);
+		String hexDigest = getHashPass(pass);
 		Iterator<User> iter = userList.iterator();
 		while(iter.hasNext()) {
 			User user = iter.next();
-			if(user.getLogin().equals(login) && user.getPassHash().equals(new String(digest))) {
+			if(user.getLogin().equals(login) && user.getPassHash().equals(hexDigest)) {
 				currentUser = user;
 				return true;
 			}
@@ -38,7 +40,7 @@ public class Beans {
 		return false;
 	}
 	
-	public static byte[] getHashPass(String pass) {
+	public static String getHashPass(String pass) {
 		MessageDigest messageDigest = null;
 		byte[] digest = null;
 		try {
@@ -49,7 +51,7 @@ public class Beans {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		return digest;
+		return DatatypeConverter.printHexBinary(digest);
 	}
 
 	public static User getCurrentUser() {

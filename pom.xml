@@ -65,7 +65,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 				<configuration>
 					<webAppSourceDirectory>${basedir}/web/target</webAppSourceDirectory>
 					<war>${basedir}/web/target/WorkPlane-web.war</war>
-					<webAppXml>${basedir}/web/src/main/webapp/WEB-INF/jetty-web.xml</webAppXml>
 				</configuration>
 			</plugin>
 		</plugins>
