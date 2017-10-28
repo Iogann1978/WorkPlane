@@ -2,13 +2,10 @@ package ru.home.workplane.ui.view;
 
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import com.vaadin.data.Binder;
+import com.vaadin.event.selection.SelectionEvent;
+import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.BrowserFrame;
@@ -25,6 +22,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.renderers.DateRenderer;
 
+import ru.home.workplane.beans.Beans;
 import ru.home.workplane.model.Diary;
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.ui.enums.WinMode;
@@ -36,13 +34,19 @@ import ru.home.workplane.util.Tools;
 
 public class DiaryPage extends AbstractView {
 	private static final long serialVersionUID = 1L;
+	private Grid<Diary> grid;
+	private ListSelect<Skill> tagsList;
+	private Diary selectedItem;
+	private TextArea textEdit;
+	private RichTextArea htmlEdit;
+	private BrowserFrame tabView;
 
 	public DiaryPage() {
-		super("Записи");
-		
+		super("Записи");	
 		btnAdd.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.INSERT)));		
 		btnEdit.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.UPDATE)));		
-		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.DELETE)));		
+		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.DELETE)));
+		selectedItem = null;
 	}
 
 	@Override
@@ -50,28 +54,22 @@ public class DiaryPage extends AbstractView {
 		VerticalSplitPanel gridPanel = new VerticalSplitPanel();
 		
 		VerticalLayout diaryLayout = new VerticalLayout();
-		Grid<Diary> grid = new Grid<>();
+		grid = new Grid<>();
 		grid.setCaption("Список записей");
 		grid.setWidth("100%");
 		grid.addColumn(Diary::getDate).setCaption("Дата записи").setRenderer(new DateRenderer(new SimpleDateFormat(Tools.LONG_DATE_FORMAT)));
 		grid.addColumn(Diary::getTitle).setCaption("Название записи");
-		List<Diary> diaryItems = new ArrayList<>();
-		diaryItems.add(new Diary("Первая запись", new Date(), "<html><body><h1>Первая запись</h1></body></html>", null));
-		Set<Skill> skillItems = new HashSet<>();
-		skillItems.add(new Skill("Java", null));
-		diaryItems.get(0).setSkillList(skillItems);
-		grid.setItems(diaryItems);
 		diaryLayout.addComponent(grid);
 		diaryLayout.setMargin(false);
 		
 		TabSheet tabSheet = new TabSheet();
-		BrowserFrame tabView = new BrowserFrame();
+		tabView = new BrowserFrame();
 		tabView.setWidth("100%");
 		tabView.setHeight("100%");
 		tabSheet.addTab(tabView, "Просмотр", VaadinIcons.PRESENTATION);
 		
 		VerticalLayout htmlLayout = new VerticalLayout();
-		RichTextArea htmlEdit = new RichTextArea();
+		htmlEdit = new RichTextArea();
 		htmlEdit.setWidth("100%");
 		htmlEdit.setHeight("100%");
 		Button btnHtmlEdit = new Button("Изменить");
@@ -80,7 +78,7 @@ public class DiaryPage extends AbstractView {
 		tabSheet.addTab(htmlLayout, "HTML-редактор", VaadinIcons.GLOBE);
 		
 		VerticalLayout textLayout = new VerticalLayout();
-		TextArea textEdit = new TextArea();
+		textEdit = new TextArea();
 		textEdit.setWidth("100%");
 		textEdit.setHeight("100%");
 		Button btnTextEdit = new Button("Изменить");
@@ -89,8 +87,7 @@ public class DiaryPage extends AbstractView {
 		tabSheet.addTab(textLayout, "TEXT-редактор", VaadinIcons.TEXT_INPUT);
 
 		VerticalLayout tagsLayout = new VerticalLayout();
-		ListSelect<Skill> tagsList = new ListSelect<>();
-		tagsList.setItems(diaryItems.get(0).getSkillList());
+		tagsList = new ListSelect<>();
 		tagsList.setCaption("Опыт к записи");
 		tagsList.setWidth("100%");
 		tagsList.setHeight("100%");
@@ -108,12 +105,6 @@ public class DiaryPage extends AbstractView {
 		tabSheet.setWidth("100%");
 		tabSheet.setHeight("100%");
 
-		Binder<Diary> binder = new Binder<>();
-		binder.bind(textEdit, diary -> diary.getContent(), (diary, content) -> diary.setContent(content));
-		binder.bind(htmlEdit, diary -> diary.getContent(), (diary, content) -> diary.setContent(content));
-		binder.readBean(diaryItems.get(0));
-		tabView.setSource(new StreamResource(() -> new ByteArrayInputStream(diaryItems.get(0).getContent().getBytes()), "temp.html"));
-		
 		gridPanel.addComponents(diaryLayout, tabSheet);
 		return gridPanel;
 	}
@@ -132,5 +123,58 @@ public class DiaryPage extends AbstractView {
 		buttonLayout.addComponents(btnFind, btnFilter);
 		buttonLayout.setMargin(false);
 		return buttonLayout;
+	}
+	
+	@Override
+	public void beforeClientResponse(boolean initial) {
+		super.beforeClientResponse(initial);
+		Set<Diary> list = Beans.getCurrentUser().getDiaryList();
+		grid.setItems(list);
+		grid.getDataProvider().refreshAll();
+		grid.setItems(list);
+		grid.addSelectionListener(event -> {
+				if(event.getFirstSelectedItem().isPresent()) {
+					selectedItem = event.getFirstSelectedItem().get();
+					refreshTagList();
+					refreshTextEdit();
+					refreshHtmlEdit();
+					refreshHtmlView();
+				} else {
+					selectedItem = null;
+				}
+			}
+		);
+	}
+	
+	private void refreshTagList() {
+		if(selectedItem != null && selectedItem.getSkillList() != null) { 
+			tagsList.setItems(selectedItem.getSkillList());
+		} else {
+			tagsList.clear();
+		}		
+	}
+	
+	private void refreshTextEdit() {
+		if(selectedItem != null && selectedItem.getContent() != null) { 
+			textEdit.setValue(selectedItem.getContent());
+		} else {
+			textEdit.setValue("");
+		}				
+	}
+	
+	private void refreshHtmlEdit() {
+		if(selectedItem != null && selectedItem.getContent() != null) { 
+			htmlEdit.setValue(selectedItem.getContent());
+		} else {
+			htmlEdit.setValue("");
+		}				
+	}
+	
+	private void refreshHtmlView() {
+		if(selectedItem != null && selectedItem.getContent() != null) { 
+			tabView.setSource(new StreamResource(() -> new ByteArrayInputStream(selectedItem.getContent().getBytes()), "temp.html"));
+		} else {
+			tabView.setSource(new StreamResource(() -> new ByteArrayInputStream("".getBytes()), "temp.html"));
+		}
 	}
 }
