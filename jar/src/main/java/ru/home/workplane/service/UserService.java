@@ -23,8 +23,7 @@ public class UserService extends AbstractService<User> {
 
 	@Override
 	public Set<User> find(String param) {
-		String queryName = "User.find";
-		List<User> list = em.createNamedQuery(queryName, User.class).setParameter(1, param).getResultList();
+		List<User> list = em.createNamedQuery("User.find", User.class).setParameter(1, param).getResultList();
 		return list.stream().collect(Collectors.toSet());
 	}
 }

@@ -36,56 +36,108 @@ public class ModelTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext("WorkPlaneTest.xml");
 		Service<User> userService = (Service<User>) context.getBean("userService");
 		assertNotNull(userService);
+		Service<Skill> skillService = (Service<Skill>) context.getBean("skillService");
+		assertNotNull(skillService);
+		Service<Book> bookService = (Service<Book>) context.getBean("bookService");
+		assertNotNull(bookService);
+		Service<Diary> diaryService = (Service<Diary>) context.getBean("diaryService");
+		assertNotNull(diaryService);
+		Service<Project> projectService = (Service<Project>) context.getBean("projectService");
+		assertNotNull(projectService);
+		Service<Organization> organizationService = (Service<Organization>) context.getBean("organizationService");
+		assertNotNull(organizationService);
+		Service<Bug> bugService = (Service<Bug>) context.getBean("bugService");
+		assertNotNull(bugService);
+		Service<Log> logService = (Service<Log>) context.getBean("logService");
+		assertNotNull(logService);
 		
 		User user = new User();
 		user.setLogin("admin");
 		String hexDigest = Beans.getHashPass("123456");
 		user.setPassHash(hexDigest);
+		userService.insert(user);
 		
 		List<Skill> skillList = new ArrayList<>();
 		skillList.addAll(Arrays.asList(new Skill("Java", user), new Skill("JavaScript", user), 
 				new Skill("Delphi", user),	new Skill("C++", user), new Skill("C#", user), 
 				new Skill("VBA", user), new Skill("SQL", user)));
+		for(Skill skill : skillList) {
+			skillService.insert(skill);
+		}
 		user.setSkillList(skillList.stream().collect(Collectors.toSet()));
 		
 		List<Book> bookList = new ArrayList<>();
 		bookList.addAll(Arrays.asList(new Book("Java for beginner", 120, "none", "none", 1995, true, user),
-				new Book("Delphi for beginner", 260, "none", "none", 2005, false, user)));
+				new Book("Delphi for beginner", 260, "none", "none", 2005, false, user)));		
+		for(Book book : bookList) {
+			bookService.insert(book);
+		}
 		Set<Skill> skillSet1 = new HashSet<>();
 		skillSet1.add(skillList.get(0));
 		bookList.get(0).setSkillList(skillSet1);
+		bookList.get(0).setContent(getContent());
 		Set<Skill> skillSet2 = new HashSet<>();
 		skillSet2.add(skillList.get(2));
 		bookList.get(1).setSkillList(skillSet2);
+		bookList.get(1).setContent(getContent());
+		for(Book book : bookList) {
+			bookService.update(book);
+		}
 		user.setBookList(bookList.stream().collect(Collectors.toSet()));
-		userService.insert(user);
 				
 		List<Diary> diaryList = new ArrayList<>();
 		diaryList.addAll(Arrays.asList(new Diary("Запись 1", new Date(), "<html><body><h1>Запись 1</h1></body></html>", user),
 				new Diary("Запись 2", new Date(), "<html><body><h1>Запись 2</h1></body></html>", user)));
+		for(Diary diary : diaryList) {
+			diaryService.insert(diary);
+		}
 		diaryList.get(0).setSkillList(skillSet1);
 		diaryList.get(1).setSkillList(skillSet2);
+		for(Diary diary : diaryList) {
+			diaryService.update(diary);
+		}
 		user.setDiaryList(diaryList.stream().collect(Collectors.toSet()));
-		
-		List<Project> prjList = new ArrayList<>();
-		prjList.addAll(Arrays.asList(new Project("Проект 1", new Date(), new Date(), 0.3d, ProjectStates.PLANING),
-				new Project("Проект 2", new Date(), new Date(), 0.7d, ProjectStates.RELEASE)));
-		prjList.get(0).setBugList(Arrays.asList(new Bug("Баг1", true), new Bug("Баг2", false)).stream().collect(Collectors.toSet()));
-		prjList.get(0).setLogList(Arrays.asList(new Log(new Date(), new Date(), "Лог 1"),
-				new Log(new Date(), new Date(), "Лог 2")).stream().collect(Collectors.toSet()));
-		prjList.get(0).setObstacleList(diaryList.stream().collect(Collectors.toSet()));
-		prjList.get(0).setSkillList(skillSet1);
-		prjList.get(1).setBugList(Arrays.asList(new Bug("Баг3", false), new Bug("Баг4", true)).stream().collect(Collectors.toSet()));
-		prjList.get(1).setLogList(Arrays.asList(new Log(new Date(), new Date(), "Лог 3"),
-				new Log(new Date(), new Date(), "Лог 4")).stream().collect(Collectors.toSet()));
-		prjList.get(1).setObstacleList(diaryList.stream().collect(Collectors.toSet()));
-		prjList.get(1).setSkillList(skillSet2);
-		
+				
 		List<Organization> orgList = new ArrayList<>();
 		orgList.addAll(Arrays.asList(new Organization("Банк Старый Кремль", new Date(), new Date(), user),
 				new Organization("Рост Банк", new Date(), new Date(), user)));
+		for(Organization org : orgList) {
+			organizationService.insert(org);
+		}
+		
+		List<Project> prjList = new ArrayList<>();
+		prjList.addAll(Arrays.asList(new Project("Проект 1", new Date(), new Date(), "Проект 1", 0.3d, ProjectStates.PLANING, orgList.get(0)),
+				new Project("Проект 2", new Date(), new Date(), "Проект 2", 0.7d, ProjectStates.RELEASE, orgList.get(1))));
+		for(Project prj : prjList) {
+			projectService.insert(prj);
+		}
+		prjList.get(0).setBugList(Arrays.asList(new Bug("Баг1", true, prjList.get(0)), 
+				new Bug("Баг2", false, prjList.get(0))).stream().collect(Collectors.toSet()));
+		prjList.get(0).setLogList(Arrays.asList(new Log(new Date(), new Date(), "Лог 1", prjList.get(0)),
+				new Log(new Date(), new Date(), "Лог 2", prjList.get(0))).stream().collect(Collectors.toSet()));
+		prjList.get(0).setObstacleList(diaryList.stream().collect(Collectors.toSet()));
+		prjList.get(0).setSkillList(skillSet1);
+		prjList.get(1).setBugList(Arrays.asList(new Bug("Баг3", false, prjList.get(1)), 
+				new Bug("Баг4", true, prjList.get(1))).stream().collect(Collectors.toSet()));
+		prjList.get(1).setLogList(Arrays.asList(new Log(new Date(), new Date(), "Лог 3", prjList.get(1)),
+				new Log(new Date(), new Date(), "Лог 4", prjList.get(1))).stream().collect(Collectors.toSet()));
+		prjList.get(1).setObstacleList(diaryList.stream().collect(Collectors.toSet()));
+		prjList.get(1).setSkillList(skillSet2);
+		for(Project prj : prjList) {
+			for(Bug bug : prj.getBugList()) {
+				bugService.insert(bug);
+			}
+			for(Log log : prj.getLogList()) {
+				logService.insert(log);
+			}
+			projectService.update(prj);
+		}
+		
 		orgList.get(0).setProjectList(prjList.stream().collect(Collectors.toSet()));
 		orgList.get(1).setProjectList(prjList.stream().collect(Collectors.toSet()));
+		for(Organization org : orgList) {
+			organizationService.update(org);
+		}
 		user.setOrganizationList(orgList.stream().collect(Collectors.toSet()));
 		
 		userService.update(user);
@@ -106,6 +158,14 @@ public class ModelTest {
 
 	@Test
 	public void testXML() {
+		String str = getContent();
+		System.out.println(str);
+		Content xml = new Content();
+		xml.unmarshal(str);
+		assertTrue(xml.getParagraphList().size() == 2);
+	}
+	
+	private String getContent() {
 		Content content = new Content();
 		List<Paragraph> paragraphList = new ArrayList<>();
 		paragraphList.addAll(Arrays.asList(new Paragraph("1", "Параграф 1", 1), new Paragraph("2", "Параграф 2", 20)));
@@ -118,9 +178,6 @@ public class ModelTest {
 		content.setParagraphList(paragraphList.stream().collect(Collectors.toSet()));
 		
 		String str = content.marshal();
-		System.out.println(str);
-		Content xml = new Content();
-		xml.unmarshal(str);
-		assertTrue(xml.getParagraphList().size() == 2);
+		return str;
 	}
 }

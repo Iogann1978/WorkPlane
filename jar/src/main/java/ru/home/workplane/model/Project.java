@@ -42,13 +42,15 @@ public class Project implements Serializable {
 	@JoinColumn(name="organization_id")
 	private Organization organization;
 	
-	public Project(String name, Date dateStart, Date dateEnd, Double percent, ProjectStates state) {
+	public Project(String name, Date dateStart, Date dateEnd, String description, Double percent, ProjectStates state, Organization organization) {
 		super();		
 		this.name = name;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
+		this.description = description;
 		this.percent = percent;
 		this.state = state;
+		this.organization = organization;
 		this.id = 0L;
 	}
 

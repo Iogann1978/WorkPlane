@@ -17,15 +17,13 @@ public class DiaryService extends AbstractService<Diary> {
 	
 	@Override
 	public Set<Diary> findAll() {
-		String queryName = "Diary.findAll";
-		List<Diary> list = em.createNamedQuery(queryName, Diary.class).getResultList();
+		List<Diary> list = em.createNamedQuery("Diary.findAll", Diary.class).getResultList();
 		return list.stream().collect(Collectors.toSet());
 	}
 
 	@Override
 	public Set<Diary> find(String param) {
-		String queryName = "Diary.find";
-		List<Diary> list = em.createNamedQuery(queryName, Diary.class).setParameter(1, param).getResultList();
+		List<Diary> list = em.createNamedQuery("Diary.find", Diary.class).setParameter(1, param).getResultList();
 		return list.stream().collect(Collectors.toSet());
 	}
 }

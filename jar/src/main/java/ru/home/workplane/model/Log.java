@@ -29,11 +29,12 @@ public class Log implements Serializable {
 		id = 0L;
 	}
 	
-	public Log(Date dateStart, Date dateEnd, String description) {
+	public Log(Date dateStart, Date dateEnd, String description, Project project) {
 		super();
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
 		this.description = description;
+		this.project = project;
 		this.id = 0L;
 	}
 

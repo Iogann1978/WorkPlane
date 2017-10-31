@@ -1,11 +1,10 @@
 package ru.home.workplane.ui.view;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Set;
 
-import com.vaadin.event.selection.SelectionEvent;
-import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.BrowserFrame;
@@ -32,11 +31,10 @@ import ru.home.workplane.ui.window.DiaryWindow;
 import ru.home.workplane.ui.window.SkillSelectWindow;
 import ru.home.workplane.util.Tools;
 
-public class DiaryPage extends AbstractView {
+public class DiaryPage extends AbstractView<Diary> {
 	private static final long serialVersionUID = 1L;
 	private Grid<Diary> grid;
 	private ListSelect<Skill> tagsList;
-	private Diary selectedItem;
 	private TextArea textEdit;
 	private RichTextArea htmlEdit;
 	private BrowserFrame tabView;
@@ -46,7 +44,6 @@ public class DiaryPage extends AbstractView {
 		btnAdd.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.INSERT)));		
 		btnEdit.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.UPDATE)));		
 		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.DELETE)));
-		selectedItem = null;
 	}
 
 	@Override
@@ -133,48 +130,33 @@ public class DiaryPage extends AbstractView {
 		grid.getDataProvider().refreshAll();
 		grid.setItems(list);
 		grid.addSelectionListener(event -> {
-				if(event.getFirstSelectedItem().isPresent()) {
-					selectedItem = event.getFirstSelectedItem().get();
-					refreshTagList();
-					refreshTextEdit();
-					refreshHtmlEdit();
-					refreshHtmlView();
-				} else {
-					selectedItem = null;
-				}
+			if(event.getFirstSelectedItem().isPresent()) {
+				setSelectedItem(event.getFirstSelectedItem().get());
+			} else {
+				setSelectedItem(null);
 			}
-		);
+			refresh();
+		});
 	}
 	
-	private void refreshTagList() {
-		if(selectedItem != null && selectedItem.getSkillList() != null) { 
+	@Override
+	protected void refresh() {
+		Diary selectedItem = getSelectedItem();
+		if(selectedItem != null && selectedItem.getContent() != null) {
+			tagsList.clear();
 			tagsList.setItems(selectedItem.getSkillList());
+			textEdit.setValue(selectedItem.getContent());
+			htmlEdit.setValue(selectedItem.getContent());
+			
+			StreamResource streamResource = new StreamResource(() -> new ByteArrayInputStream(selectedItem.getContent().getBytes(StandardCharsets.UTF_8)), "temp"+selectedItem.getId()+".html");
+			streamResource.setMIMEType("text/html");
+			tabView.setSource(streamResource);
 		} else {
 			tagsList.clear();
-		}		
-	}
-	
-	private void refreshTextEdit() {
-		if(selectedItem != null && selectedItem.getContent() != null) { 
-			textEdit.setValue(selectedItem.getContent());
-		} else {
 			textEdit.setValue("");
-		}				
-	}
-	
-	private void refreshHtmlEdit() {
-		if(selectedItem != null && selectedItem.getContent() != null) { 
-			htmlEdit.setValue(selectedItem.getContent());
-		} else {
 			htmlEdit.setValue("");
-		}				
-	}
-	
-	private void refreshHtmlView() {
-		if(selectedItem != null && selectedItem.getContent() != null) { 
-			tabView.setSource(new StreamResource(() -> new ByteArrayInputStream(selectedItem.getContent().getBytes()), "temp.html"));
-		} else {
-			tabView.setSource(new StreamResource(() -> new ByteArrayInputStream("".getBytes()), "temp.html"));
+			tabView.setSource(new StreamResource(() -> new ByteArrayInputStream("".getBytes()), "tempnull.html"));
 		}
+		tagsList.getDataProvider().refreshAll();
 	}
 }

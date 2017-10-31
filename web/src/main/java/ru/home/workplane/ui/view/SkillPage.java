@@ -12,15 +12,15 @@ import ru.home.workplane.model.Skill;
 import ru.home.workplane.ui.enums.WinMode;
 import ru.home.workplane.ui.window.SkillWindow;
 
-public class SkillPage extends AbstractView {
+public class SkillPage extends AbstractView<Skill> {
 	private static final long serialVersionUID = 1L;
 	private Grid<Skill> grid;
 
 	public SkillPage() {
 		super("Опыт");
-		btnAdd.addClickListener(e -> UI.getCurrent().addWindow(new SkillWindow(WinMode.INSERT)));
-		btnEdit.addClickListener(e -> UI.getCurrent().addWindow(new SkillWindow(WinMode.UPDATE)));		
-		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new SkillWindow(WinMode.DELETE)));
+		btnAdd.addClickListener(e -> UI.getCurrent().addWindow(new SkillWindow(new Skill("", Beans.getCurrentUser()), WinMode.INSERT)));
+		btnEdit.addClickListener(e -> UI.getCurrent().addWindow(new SkillWindow(getSelectedItem(), WinMode.UPDATE)));		
+		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new SkillWindow(getSelectedItem(), WinMode.DELETE)));
 	}
 
 	@Override
@@ -44,7 +44,18 @@ public class SkillPage extends AbstractView {
 	public void beforeClientResponse(boolean initial) {
 		super.beforeClientResponse(initial);
 		Set<Skill> list = Beans.getCurrentUser().getSkillList();
+		grid.addSelectionListener(event -> {
+			if(event.getFirstSelectedItem().isPresent()) {
+				setSelectedItem(event.getFirstSelectedItem().get());
+			} else {
+				setSelectedItem(null);
+			}
+		});
 		grid.setItems(list);
 		grid.getDataProvider().refreshAll();
+	}
+
+	@Override
+	protected void refresh() {
 	}
 }

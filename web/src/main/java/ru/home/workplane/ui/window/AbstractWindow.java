@@ -7,12 +7,14 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import ru.home.workplane.beans.Beans;
 import ru.home.workplane.ui.enums.WinMode;
 
-public abstract class AbstractWindow extends Window {
+public abstract class AbstractWindow<T> extends Window {
 	private static final long serialVersionUID = 1L;
 	protected Button btnOK, btnCancel;
 	private VerticalLayout layout;
+	private WinMode mode;
 	
 	public AbstractWindow() {
 		super();
@@ -21,6 +23,7 @@ public abstract class AbstractWindow extends Window {
 	
 	public AbstractWindow(WinMode mode, String title) {
 		super();
+		this.mode = mode;
 		
 		switch(mode) {
 		case INSERT:
@@ -53,6 +56,20 @@ public abstract class AbstractWindow extends Window {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		btnOK = new Button("OK");
 		btnOK.setIcon(VaadinIcons.CHECK);
+		btnOK.addClickListener(e -> {
+			switch(mode) {
+			case INSERT:
+				insert();
+				break;
+			case UPDATE:
+				update();
+				break;
+			default:
+				delete();
+				break;				
+			}
+			close();
+		});
 		btnCancel = new Button("Отмена");
 		btnCancel.setIcon(VaadinIcons.CLOSE);	
 		btnCancel.addClickListener(e -> close());
@@ -63,7 +80,21 @@ public abstract class AbstractWindow extends Window {
 		setContent(layout);
 		layout.setExpandRatio(c, 1.0f);
 	}
-			
+
+	private void insert() {
+		T item = getItem();
+		Beans.insert(item);
+	}
+	private void update() {
+		T item = getItem();
+		Beans.update(item);		
+	}
+	private void delete() {
+		T item = getItem();
+		Beans.delete(item);				
+	}
+	
 	protected abstract Component getCentral();
 	protected abstract void setDeleteMode();
+	protected abstract T getItem();
 }

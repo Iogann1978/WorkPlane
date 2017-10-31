@@ -1,14 +1,11 @@
 package ru.home.workplane.ui.view;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import com.vaadin.data.Binder;
 import com.vaadin.data.TreeData;
 import com.vaadin.data.provider.TreeDataProvider;
 import com.vaadin.icons.VaadinIcons;
@@ -30,6 +27,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.renderers.ProgressBarRenderer;
 
+import ru.home.workplane.beans.Beans;
 import ru.home.workplane.enums.ProjectStates;
 import ru.home.workplane.model.Bug;
 import ru.home.workplane.model.Diary;
@@ -46,47 +44,35 @@ import ru.home.workplane.ui.window.ProjectWindow;
 import ru.home.workplane.ui.window.SkillSelectWindow;
 import ru.home.workplane.util.Tools;
 
-public class ProjectPage extends AbstractView {
+public class ProjectPage extends AbstractView<Project> {
 	private static final long serialVersionUID = 1L;
+	private TreeGrid<Project> grid;
+	private TreeData<Project> data;
+	private ListSelect<Skill> tagsList;
+	private Grid<Bug> bugsGrid;
+	private Grid<Log> logGrid;
+	private ListSelect<Diary> obstacleList;
+	private TextArea textEdit;
+	private RichTextArea htmlEdit;
+	private BrowserFrame tabView;
+	private BrowserFrame obstacleView;
 
 	public ProjectPage() {
 		super("Менеджер проектов");
-
 		btnAdd.addClickListener(e -> UI.getCurrent().addWindow(new ProjectWindow(WinMode.INSERT)));
 		btnEdit.addClickListener(e -> UI.getCurrent().addWindow(new ProjectWindow(WinMode.UPDATE)));		
-		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new ProjectWindow(WinMode.DELETE)));				
+		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new ProjectWindow(WinMode.DELETE)));
 	}
 
 	@Override
 	protected Component getCentral() {
-		List<Organization> items = new ArrayList<>();
-		items.add(new Organization("Завод", new Date(), new Date(), null));
-		items.add(new Organization("Банк", new Date(), new Date(), null));
-		
 		VerticalSplitPanel gridPanel = new VerticalSplitPanel();
 		
 		VerticalLayout projectLayout = new VerticalLayout();
-		TreeGrid<Project> grid = new TreeGrid<>();
+		grid = new TreeGrid<>();
 		grid.setCaption("Список проектов");
 		grid.setWidth("100%");
-		Set<Project> list1 = new HashSet<>();
-		Project project1 = new Project("первый проект", new Date(), new Date(), 0.37d, ProjectStates.CREATING);
-		project1.setDescription("<html><body><h1>Первый проект<h1></body></html>");
-		Project project2 = new Project("второй проект", new Date(), new Date(), 0.37d, ProjectStates.CREATING);
-		list1.add(project1);
-		list1.add(project2);
-		items.get(0).setProjectList(list1);
-		Set<Project> list2 = new HashSet<>();
-		list2.add(new Project("третий проект", new Date(), new Date(), 0.37d, ProjectStates.CREATING));
-		list2.add(new Project("четвертый проект", new Date(), new Date(), 0.37d, ProjectStates.CREATING));
-		items.get(1).setProjectList(list2);
-		TreeData<Project> data = new TreeData<>();
-		Project parent1 = new Project(items.get(0));
-		Project parent2 = new Project(items.get(1));
-		data.addItems(null, parent1);
-		data.addItems(null, parent2);
-		data.addItems(parent1, items.get(0).getProjectList());
-		data.addItems(parent2, items.get(1).getProjectList());
+		data = new TreeData<>();
 		TreeDataProvider<Project> dataProvider = new TreeDataProvider<>(data);
  		grid.setDataProvider(dataProvider);
  		grid.addColumn(Project::getState).setRenderer((state) -> Tools.getResource(state).getHtml(), new HtmlRenderer());
@@ -98,31 +84,15 @@ public class ProjectPage extends AbstractView {
 		projectLayout.addComponent(grid);
 		projectLayout.setMargin(false);
 		
-		Set<Skill> skillItems = new HashSet<>();
-		skillItems.add(new Skill("Java", null));
-		Set<Bug> bugItems = new HashSet<>();
-		bugItems.add(new Bug("Баг 1", true));
-		bugItems.add(new Bug("Баг 2", false));
-		Set<Log> logItems = new HashSet<>();
-		logItems.add(new Log(new Date(), new Date(), "Первая запись"));
-		Set<Diary> obstacleItems = new HashSet<>();
-		Diary obstacle1 = new Diary("Первая запись", new Date() ,"<html><body><h1>Первая запись</h1></body></html>", null);
-		obstacle1.setSkillList(skillItems);
-		obstacleItems.add(obstacle1);
-		project1.setSkillList(skillItems);
-		project1.setBugList(bugItems);
-		project1.setLogList(logItems);
-		project1.setObstacleList(obstacleItems);
-		
 		TabSheet tabSheet = new TabSheet();
 		
-		BrowserFrame tabView = new BrowserFrame();
+		tabView = new BrowserFrame();
 		tabView.setWidth("100%");
 		tabView.setHeight("100%");
 		tabSheet.addTab(tabView, "Просмотр", VaadinIcons.PRESENTATION);
 		
 		VerticalLayout htmlLayout = new VerticalLayout();
-		RichTextArea htmlEdit = new RichTextArea();
+		htmlEdit = new RichTextArea();
 		htmlEdit.setWidth("100%");
 		htmlEdit.setHeight("100%");
 		Button btnHtmlEdit = new Button("Изменить");
@@ -131,7 +101,7 @@ public class ProjectPage extends AbstractView {
 		tabSheet.addTab(htmlLayout, "HTML-редактор", VaadinIcons.GLOBE);
 		
 		VerticalLayout textLayout = new VerticalLayout();
-		TextArea textEdit = new TextArea();
+		textEdit = new TextArea();
 		textEdit.setWidth("100%");
 		textEdit.setHeight("100%");
 		Button btnTextEdit = new Button("Изменить");
@@ -140,8 +110,7 @@ public class ProjectPage extends AbstractView {
 		tabSheet.addTab(textLayout, "TEXT-редактор", VaadinIcons.TEXT_INPUT);
 		
 		VerticalLayout tagsLayout = new VerticalLayout();
-		ListSelect<Skill> tagsList = new ListSelect<>();
-		tagsList.setItems(project1.getSkillList());
+		tagsList = new ListSelect<>();
 		tagsList.setCaption("Опыт к проекту");
 		tagsList.setWidth("100%");
 		tagsList.setHeight("100%");
@@ -157,8 +126,7 @@ public class ProjectPage extends AbstractView {
 		tabSheet.addTab(tagsLayout, "Список тэгов", VaadinIcons.TAGS);
 
 		VerticalLayout bugsLayout = new VerticalLayout();
-		Grid<Bug> bugsGrid = new Grid<>();
-		bugsGrid.setItems(project1.getBugList());
+		bugsGrid = new Grid<>();
 		bugsGrid.setCaption("Найденные ошибки");
 		bugsGrid.addColumn(Bug::getBug).setRenderer((source) -> (source.isFlag()) ? "<html><body>"+source.getName()+"</body></html>" : "<html><body><strike>"+source.getName()+"</strike></body></html>", new HtmlRenderer());
 		bugsGrid.setWidth("100%");
@@ -178,8 +146,7 @@ public class ProjectPage extends AbstractView {
 		tabSheet.addTab(bugsLayout, "Найденные ошибки", VaadinIcons.BUG);
 
 		VerticalLayout logLayout = new VerticalLayout();
-		Grid<Log> logGrid = new Grid<>();
-		logGrid.setItems(project1.getLogList());
+		logGrid = new Grid<>();
 		logGrid.setCaption("Журнал работ");
 		logGrid.addColumn(Log::getDateStart).setRenderer(new DateRenderer(new SimpleDateFormat(Tools.SHORT_DATE_FORMAT)));
 		logGrid.addColumn(Log::getDateEnd).setRenderer(new DateRenderer(new SimpleDateFormat(Tools.SHORT_DATE_FORMAT)));
@@ -200,12 +167,11 @@ public class ProjectPage extends AbstractView {
 
 		VerticalLayout vobstacleLayout = new VerticalLayout();
 		HorizontalLayout hobstacleLayout = new HorizontalLayout();
-		ListSelect<Diary> obstacleList = new ListSelect<>();
-		obstacleList.setItems(project1.getObstacleList());
+		obstacleList = new ListSelect<>();
 		obstacleList.setCaption("Проблемы и решения");
 		obstacleList.setWidth("100%");
 		obstacleList.setHeight("100%");
-		BrowserFrame obstacleView = new BrowserFrame();
+		obstacleView = new BrowserFrame();
 		obstacleView.setWidth("100%");
 		obstacleView.setHeight("100%");
 		HorizontalLayout buttonObstacleLayout = new HorizontalLayout();
@@ -221,20 +187,10 @@ public class ProjectPage extends AbstractView {
 		buttonObstacleLayout.addComponents(btnEditObstacle, btnAddObstacle, btnDelObstacle);
 		hobstacleLayout.addComponents(obstacleList, obstacleView);
 		vobstacleLayout.addComponents(hobstacleLayout, buttonObstacleLayout);
-		tabSheet.addTab(vobstacleLayout, "Проблемы и решения", VaadinIcons.ERASER);		
-		obstacleView.setSource(new StreamResource(
-				() -> new ByteArrayInputStream(obstacle1.getContent().getBytes()), 
-				"temp.html")
-				);	
-		
+		tabSheet.addTab(vobstacleLayout, "Проблемы и решения", VaadinIcons.ERASER);
 		tabSheet.setWidth("100%");
 		gridPanel.addComponents(projectLayout, tabSheet);
 		
-		Binder<Project> binder = new Binder<>();
-		binder.bind(textEdit, project -> project.getDescription(), (project, description) -> project.setDescription(description));
-		binder.bind(htmlEdit, project -> project.getDescription(), (project, description) -> project.setDescription(description));
-		binder.readBean(project1);
-		tabView.setSource(new StreamResource(() -> new ByteArrayInputStream(project1.getDescription().getBytes()), "temp.html"));	
 		return gridPanel;
 	}
 
@@ -251,5 +207,75 @@ public class ProjectPage extends AbstractView {
 		buttonLayout.addComponents(btnView, btnReport);
 		buttonLayout.setMargin(false);
 		return buttonLayout;
+	}
+	
+	@Override
+	public void beforeClientResponse(boolean initial) {
+		super.beforeClientResponse(initial);
+		Set<Organization> orgList = Beans.getCurrentUser().getOrganizationList();
+		for(Organization org : orgList) {
+			Project parent = new Project(org);
+			data.addItem(null, parent);
+			data.addItems(parent, org.getProjectList());
+		}
+		
+		grid.addSelectionListener(event -> {
+			if(event.getFirstSelectedItem().isPresent()) {
+				setSelectedItem(event.getFirstSelectedItem().get());
+			} else {
+				setSelectedItem(null);
+			}
+			refresh();
+		});
+		
+		obstacleList.addSelectionListener(event -> {
+			if(event.getFirstSelectedItem().isPresent()) {
+				Diary diary = event.getFirstSelectedItem().get();
+				refresh(diary);
+			} else {
+				refresh(null);
+			}			
+		});
+	}
+	
+	@Override
+	protected void refresh() {
+		Project selectedItem = getSelectedItem();
+		if(selectedItem != null && selectedItem.getState() != ProjectStates.ORGANIZATION) {
+			tagsList.clear();
+			tagsList.setItems(selectedItem.getSkillList());
+			bugsGrid.setItems(selectedItem.getBugList());
+			logGrid.setItems(selectedItem.getLogList());
+			obstacleList.clear();
+			obstacleList.setItems(selectedItem.getObstacleList());
+			textEdit.setValue(selectedItem.getDescription());
+			htmlEdit.setValue(selectedItem.getDescription());
+			
+			StreamResource streamResource = new StreamResource(() -> new ByteArrayInputStream(selectedItem.getDescription().getBytes(StandardCharsets.UTF_8)), "temp"+selectedItem.getId()+".html");
+			streamResource.setMIMEType("text/html");
+			tabView.setSource(streamResource);
+		} else {
+			tagsList.clear();
+			bugsGrid.setItems(new HashSet<Bug>());
+			logGrid.setItems(new HashSet<Log>());
+			obstacleList.clear();
+			textEdit.setValue("");
+			htmlEdit.setValue("");			
+			tabView.setSource(new StreamResource(() -> new ByteArrayInputStream("".getBytes()), "tempnull.html"));
+		}
+		logGrid.getDataProvider().refreshAll();
+		tagsList.getDataProvider().refreshAll();
+		bugsGrid.getDataProvider().refreshAll();
+		obstacleList.getDataProvider().refreshAll();
+	}
+	
+	private void refresh(Diary diary) {
+		if(diary != null) {
+			StreamResource streamResource = new StreamResource(() -> new ByteArrayInputStream(diary.getContent().getBytes(StandardCharsets.UTF_8)), "temp"+diary.getId()+".html");
+			streamResource.setMIMEType("text/html");
+			obstacleView.setSource(streamResource);			
+		} else {
+			obstacleView.setSource(new StreamResource(() -> new ByteArrayInputStream("".getBytes()), "tempnull.html"));
+		}
 	}
 }

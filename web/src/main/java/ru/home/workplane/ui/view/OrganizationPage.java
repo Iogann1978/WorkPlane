@@ -1,9 +1,6 @@
 package ru.home.workplane.ui.view;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import com.vaadin.ui.Component;
@@ -17,7 +14,7 @@ import ru.home.workplane.ui.enums.WinMode;
 import ru.home.workplane.ui.window.OrganizationWindow;
 import ru.home.workplane.util.Tools;
 
-public class OrganizationPage extends AbstractView {
+public class OrganizationPage extends AbstractView<Organization> {
 	private static final long serialVersionUID = 1L;
 	private Grid<Organization> grid;
 
@@ -49,7 +46,18 @@ public class OrganizationPage extends AbstractView {
 	public void beforeClientResponse(boolean initial) {
 		super.beforeClientResponse(initial);
 		Set<Organization> list = Beans.getCurrentUser().getOrganizationList();
+		grid.addSelectionListener(event -> {
+			if(event.getFirstSelectedItem().isPresent()) {
+				setSelectedItem(event.getFirstSelectedItem().get());
+			} else {
+				setSelectedItem(null);
+			}
+		});
 		grid.setItems(list);
 		grid.getDataProvider().refreshAll();
+	}
+
+	@Override
+	protected void refresh() {
 	}	
 }

@@ -3,28 +3,37 @@ package ru.home.workplane.ui.window;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 
+import ru.home.workplane.model.Organization;
 import ru.home.workplane.ui.enums.WinMode;
 import ru.home.workplane.util.Tools;
 
-public class OrganizationWindow extends AbstractWindow {
+public class OrganizationWindow extends AbstractWindow<Organization> {
 	private static final long serialVersionUID = 1L;
-	private TextField textSkill;
+	private TextField textOrganization;
+	private Organization selectedItem;
 	
-	public OrganizationWindow(WinMode mode) {
-		super(mode, "место работы");
+	public OrganizationWindow(Organization selectedItem, WinMode mode) {
+		super(mode, "Место работы");
 		setHeight("180px");
 		setWidth(Tools.SHORT_WIDTH);
+		this.selectedItem = selectedItem;
 	}
 
 	@Override
 	protected Component getCentral() {
-		textSkill = new TextField("Название:");
-		textSkill.setWidth("100%");
-		return textSkill;
+		textOrganization = new TextField("Название:");
+		textOrganization.setWidth("100%");
+		return textOrganization;
 	}
 
 	@Override
 	protected void setDeleteMode() {
-		textSkill.setEnabled(false);
+		textOrganization.setEnabled(false);
+	}
+
+	@Override
+	protected Organization getItem() {
+		selectedItem.setName(textOrganization.getValue());
+		return selectedItem;
 	}
 }

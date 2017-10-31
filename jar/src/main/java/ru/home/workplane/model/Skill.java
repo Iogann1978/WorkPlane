@@ -65,11 +65,19 @@ public class Skill implements Serializable {
 	}
 	
 	public int getProjectCount() {
-		return 0;
+		int count = 0;
+		if(projectList != null && projectList.size() > 0) {
+			count = projectList.size();
+		}
+		return count;
 	}
 	
 	public int getDiaryCount() {
-		return 0;
+		int count = 0;
+		if(diaryList != null && diaryList.size() > 0) {
+			count = diaryList.size();
+		}
+		return count;
 	}
 
 	public Set<Diary> getDiaryList() {

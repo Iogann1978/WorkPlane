@@ -1,0 +1,145 @@
+/*C3*/SET SCHEMA PUBLIC
+alter table Book drop constraint FKpsgrhw51v8on5lbyoo5qdjypq
+alter table Bug drop constraint FK4n3ju3koassgvt2kugkluswca
+alter table Diary drop constraint FKk7kxnp8j6cpl72lywcjovo90g
+alter table link_book_skill drop constraint FKtb7mdotyt2qw1ivmtv1jk6cwt
+alter table link_book_skill drop constraint FKq030sf19tqw84xmqxcftocyva
+alter table link_diary_project drop constraint FK3n2vkm493ntp0uoxqoxfh3g43
+alter table link_diary_project drop constraint FKrlg1wen57xy6nswlulndro6rs
+alter table link_diary_skill drop constraint FKcb8woj9p8ow6l3rrh9s2txr3w
+alter table link_diary_skill drop constraint FKo6y6q0oborts8dhwrph5a1291
+alter table link_project_skill drop constraint FK3noj14p1urctme306njww998n
+alter table link_project_skill drop constraint FKjpmufwyt777mg9k0ix6xpqtpd
+alter table Log drop constraint FKq0bbik7vsdv706s6yvi9x0av9
+alter table Organization drop constraint FKqejxrt50erjfu14wdbov5i49w
+alter table Project drop constraint FKte47j0gvgql9pju6ruw3lf8io
+alter table Skill drop constraint FKr058yknylrwtij1sql3wyx1an
+drop table Book if exists
+drop table Bug if exists
+drop table Diary if exists
+drop table link_book_skill if exists
+drop table link_diary_project if exists
+drop table link_diary_skill if exists
+drop table link_project_skill if exists
+drop table Log if exists
+drop table Organization if exists
+drop table Project if exists
+drop table Skill if exists
+drop table User if exists
+drop sequence hibernate_sequence if exists
+create sequence hibernate_sequence start with 1 increment by 1
+create table Book (id bigint not null, author varchar(255), content LONGVARCHAR, pages integer not null, publisher varchar(255), studied boolean not null, title varchar(255), year integer not null, user_id bigint, primary key (id))
+create table Bug (id bigint not null, flag boolean not null, name varchar(255), project_id bigint, primary key (id))
+create table Diary (id bigint not null, content LONGVARCHAR, date timestamp, title varchar(255), user_id bigint, primary key (id))
+create table link_book_skill (book_id bigint not null, skill_id bigint not null, primary key (book_id, skill_id))
+create table link_diary_project (project_id bigint, diary_id bigint not null, primary key (diary_id))
+create table link_diary_skill (diary_id bigint not null, skill_id bigint not null, primary key (diary_id, skill_id))
+create table link_project_skill (project_id bigint not null, skill_id bigint not null, primary key (project_id, skill_id))
+create table Log (id bigint not null, dateEnd timestamp, dateStart timestamp, description LONGVARCHAR, project_id bigint, primary key (id))
+create table Organization (id bigint not null, dateEnd timestamp, dateStart timestamp, name varchar(255), user_id bigint, primary key (id))
+create table Project (id bigint not null, dateEnd timestamp, dateStart timestamp, description LONGVARCHAR, name varchar(255), percent double, state integer, organization_id bigint, primary key (id))
+create table Skill (id bigint not null, title varchar(255), user_id bigint, primary key (id))
+create table User (id bigint not null, login varchar(255), passHash varchar(255), primary key (id))
+alter table Book add constraint FKpsgrhw51v8on5lbyoo5qdjypq foreign key (user_id) references User
+alter table Bug add constraint FK4n3ju3koassgvt2kugkluswca foreign key (project_id) references Project
+alter table Diary add constraint FKk7kxnp8j6cpl72lywcjovo90g foreign key (user_id) references User
+alter table link_book_skill add constraint FKtb7mdotyt2qw1ivmtv1jk6cwt foreign key (skill_id) references Skill
+alter table link_book_skill add constraint FKq030sf19tqw84xmqxcftocyva foreign key (book_id) references Book
+alter table link_diary_project add constraint FK3n2vkm493ntp0uoxqoxfh3g43 foreign key (project_id) references Project
+alter table link_diary_project add constraint FKrlg1wen57xy6nswlulndro6rs foreign key (diary_id) references Diary
+alter table link_diary_skill add constraint FKcb8woj9p8ow6l3rrh9s2txr3w foreign key (skill_id) references Skill
+alter table link_diary_skill add constraint FKo6y6q0oborts8dhwrph5a1291 foreign key (diary_id) references Diary
+alter table link_project_skill add constraint FK3noj14p1urctme306njww998n foreign key (skill_id) references Skill
+alter table link_project_skill add constraint FKjpmufwyt777mg9k0ix6xpqtpd foreign key (project_id) references Project
+alter table Log add constraint FKq0bbik7vsdv706s6yvi9x0av9 foreign key (project_id) references Project
+alter table Organization add constraint FKqejxrt50erjfu14wdbov5i49w foreign key (user_id) references User
+alter table Project add constraint FKte47j0gvgql9pju6ruw3lf8io foreign key (organization_id) references Organization
+alter table Skill add constraint FKr058yknylrwtij1sql3wyx1an foreign key (user_id) references User
+INSERT INTO USER VALUES(1,'admin','E10ADC3949BA59ABBE56E057F20F883E')
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 2
+COMMIT
+INSERT INTO SKILL VALUES(2,'Java',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 3
+COMMIT
+INSERT INTO SKILL VALUES(3,'JavaScript',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 4
+COMMIT
+INSERT INTO SKILL VALUES(4,'Delphi',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 5
+COMMIT
+INSERT INTO SKILL VALUES(5,'C++',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 6
+COMMIT
+INSERT INTO SKILL VALUES(6,'C#',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 7
+COMMIT
+INSERT INTO SKILL VALUES(7,'VBA',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 8
+COMMIT
+INSERT INTO SKILL VALUES(8,'SQL',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 9
+COMMIT
+INSERT INTO BOOK VALUES(9,'none',NULL,120,'none',TRUE,'Java for beginner',1995,1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 10
+COMMIT
+INSERT INTO BOOK VALUES(10,'none',NULL,260,'none',FALSE,'Delphi for beginner',2005,1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 11
+COMMIT
+DELETE FROM BOOK WHERE ID=9
+INSERT INTO BOOK VALUES(9,'none','<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\u000a<content>\u000a    <paragraphList number="1" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 1" page="1">\u000a        <paragraphList number="1.1" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 1.1" page="2"/>\u000a        <paragraphList number="1.2" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 1.2" page="3"/>\u000a    </paragraphList>\u000a    <paragraphList number="2" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 2" page="20">\u000a        <paragraphList number="2.1" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 2.1" page="12"/>\u000a        <paragraphList number="2.2" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 2.2" page="13"/>\u000a    </paragraphList>\u000a</content>\u000a',120,'none',TRUE,'Java for beginner',1995,1)
+INSERT INTO LINK_BOOK_SKILL VALUES(9,2)
+COMMIT
+DELETE FROM BOOK WHERE ID=10
+INSERT INTO BOOK VALUES(10,'none','<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\u000a<content>\u000a    <paragraphList number="1" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 1" page="1">\u000a        <paragraphList number="1.2" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 1.2" page="3"/>\u000a        <paragraphList number="1.1" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 1.1" page="2"/>\u000a    </paragraphList>\u000a    <paragraphList number="2" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 2" page="20">\u000a        <paragraphList number="2.2" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 2.2" page="13"/>\u000a        <paragraphList number="2.1" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 2.1" page="12"/>\u000a    </paragraphList>\u000a</content>\u000a',260,'none',FALSE,'Delphi for beginner',2005,1)
+INSERT INTO LINK_BOOK_SKILL VALUES(10,4)
+COMMIT
+INSERT INTO DIARY VALUES(11,'<html><body><h1>\u0417\u0430\u043f\u0438\u0441\u044c 1</h1></body></html>','2017-10-31 15:53:11.493000','\u0417\u0430\u043f\u0438\u0441\u044c 1',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 12
+COMMIT
+INSERT INTO DIARY VALUES(12,'<html><body><h1>\u0417\u0430\u043f\u0438\u0441\u044c 2</h1></body></html>','2017-10-31 15:53:11.493000','\u0417\u0430\u043f\u0438\u0441\u044c 2',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 13
+COMMIT
+INSERT INTO LINK_DIARY_SKILL VALUES(11,2)
+COMMIT
+INSERT INTO LINK_DIARY_SKILL VALUES(12,4)
+COMMIT
+INSERT INTO ORGANIZATION VALUES(13,'2017-10-31 15:53:11.524000','2017-10-31 15:53:11.524000','\u0411\u0430\u043d\u043a \u0421\u0442\u0430\u0440\u044b\u0439 \u041a\u0440\u0435\u043c\u043b\u044c',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 14
+COMMIT
+INSERT INTO ORGANIZATION VALUES(14,'2017-10-31 15:53:11.524000','2017-10-31 15:53:11.524000','\u0420\u043e\u0441\u0442 \u0411\u0430\u043d\u043a',1)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 15
+COMMIT
+INSERT INTO PROJECT VALUES(15,'2017-10-31 15:53:11.524000','2017-10-31 15:53:11.524000','\u041f\u0440\u043e\u0435\u043a\u0442 1','\u041f\u0440\u043e\u0435\u043a\u0442 1',0.3E0,0,13)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 16
+COMMIT
+INSERT INTO PROJECT VALUES(16,'2017-10-31 15:53:11.524000','2017-10-31 15:53:11.524000','\u041f\u0440\u043e\u0435\u043a\u0442 2','\u041f\u0440\u043e\u0435\u043a\u0442 2',0.7E0,4,14)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 17
+COMMIT
+INSERT INTO BUG VALUES(17,FALSE,'\u0411\u0430\u04332',15)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 18
+COMMIT
+INSERT INTO BUG VALUES(18,TRUE,'\u0411\u0430\u04331',15)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 19
+COMMIT
+INSERT INTO LOG VALUES(19,'2017-10-31 15:53:11.540000','2017-10-31 15:53:11.540000','\u041b\u043e\u0433 2',15)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 20
+COMMIT
+INSERT INTO LOG VALUES(20,'2017-10-31 15:53:11.540000','2017-10-31 15:53:11.540000','\u041b\u043e\u0433 1',15)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 21
+COMMIT
+INSERT INTO LINK_PROJECT_SKILL VALUES(15,2)
+COMMIT
+INSERT INTO BUG VALUES(21,TRUE,'\u0411\u0430\u04334',16)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 22
+COMMIT
+INSERT INTO BUG VALUES(22,FALSE,'\u0411\u0430\u04333',16)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 23
+COMMIT
+INSERT INTO LOG VALUES(23,'2017-10-31 15:53:11.540000','2017-10-31 15:53:11.540000','\u041b\u043e\u0433 3',16)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 24
+COMMIT
+INSERT INTO LOG VALUES(24,'2017-10-31 15:53:11.540000','2017-10-31 15:53:11.540000','\u041b\u043e\u0433 4',16)
+ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 25
+COMMIT
+INSERT INTO LINK_PROJECT_SKILL VALUES(16,4)
+COMMIT

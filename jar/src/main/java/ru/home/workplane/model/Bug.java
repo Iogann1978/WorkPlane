@@ -26,10 +26,11 @@ public class Bug implements Serializable {
 		id = 0L;
 	}
 
-	public Bug(String name, Boolean flag) {
+	public Bug(String name, Boolean flag, Project project) {
 		super();
 		this.name = name;
 		this.flag = flag;
+		this.project = project;
 		this.id = 0L;
 	}
 
