@@ -26,6 +26,10 @@ public class Log implements Serializable {
 
 	public Log() {
 		super();
+		dateStart = new Date();
+		dateEnd = new Date();
+		description= "";
+		project = null;
 		id = 0L;
 	}
 	

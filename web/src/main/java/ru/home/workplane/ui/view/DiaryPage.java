@@ -3,8 +3,9 @@ package ru.home.workplane.ui.view;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Set;
+import java.util.HashSet;
 
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.BrowserFrame;
@@ -25,6 +26,7 @@ import ru.home.workplane.beans.Beans;
 import ru.home.workplane.model.Diary;
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.ui.enums.WinMode;
+import ru.home.workplane.ui.window.AbstractWindow;
 import ru.home.workplane.ui.window.DiaryFilterWindow;
 import ru.home.workplane.ui.window.DiaryFindWindow;
 import ru.home.workplane.ui.window.DiaryWindow;
@@ -34,24 +36,25 @@ import ru.home.workplane.util.Tools;
 public class DiaryPage extends AbstractView<Diary> {
 	private static final long serialVersionUID = 1L;
 	private Grid<Diary> grid;
+	private ListDataProvider<Diary> dataProvider;
 	private ListSelect<Skill> tagsList;
 	private TextArea textEdit;
 	private RichTextArea htmlEdit;
 	private BrowserFrame tabView;
 
 	public DiaryPage() {
-		super("Записи");	
-		btnAdd.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.INSERT)));		
-		btnEdit.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.UPDATE)));		
-		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new DiaryWindow(WinMode.DELETE)));
+		super("Записи");
 	}
 
 	@Override
 	protected Component getCentral() {
+		grid = new Grid<>();
+		dataProvider = new ListDataProvider<>(new HashSet<Diary>());
+		grid.setDataProvider(dataProvider);
+		
 		VerticalSplitPanel gridPanel = new VerticalSplitPanel();
 		
 		VerticalLayout diaryLayout = new VerticalLayout();
-		grid = new Grid<>();
 		grid.setCaption("Список записей");
 		grid.setWidth("100%");
 		grid.addColumn(Diary::getDate).setCaption("Дата записи").setRenderer(new DateRenderer(new SimpleDateFormat(Tools.LONG_DATE_FORMAT)));
@@ -68,9 +71,14 @@ public class DiaryPage extends AbstractView<Diary> {
 		VerticalLayout htmlLayout = new VerticalLayout();
 		htmlEdit = new RichTextArea();
 		htmlEdit.setWidth("100%");
-		htmlEdit.setHeight("100%");
+		htmlEdit.setHeight("100%");		
 		Button btnHtmlEdit = new Button("Изменить");
 		btnHtmlEdit.setIcon(VaadinIcons.EDIT);
+		btnHtmlEdit.addClickListener(e -> {
+			getSelectedItem().setContent(htmlEdit.getValue());
+			Beans.getUserService().update(getUser());
+			refresh();
+		});
 		htmlLayout.addComponents(htmlEdit, btnHtmlEdit);
 		tabSheet.addTab(htmlLayout, "HTML-редактор", VaadinIcons.GLOBE);
 		
@@ -80,6 +88,11 @@ public class DiaryPage extends AbstractView<Diary> {
 		textEdit.setHeight("100%");
 		Button btnTextEdit = new Button("Изменить");
 		btnTextEdit.setIcon(VaadinIcons.EDIT);
+		btnTextEdit.addClickListener(e -> {
+			getSelectedItem().setContent(textEdit.getValue());
+			Beans.getUserService().update(getUser());
+			refresh();
+		});
 		textLayout.addComponents(textEdit, btnTextEdit);
 		tabSheet.addTab(textLayout, "TEXT-редактор", VaadinIcons.TEXT_INPUT);
 
@@ -91,10 +104,18 @@ public class DiaryPage extends AbstractView<Diary> {
 		HorizontalLayout buttonTagsLayout = new HorizontalLayout();
 		Button btnAddTag = new Button("Добавить тэг");
 		btnAddTag.setIcon(VaadinIcons.PLUS);
-		btnAddTag.addClickListener(e -> UI.getCurrent().addWindow(new SkillSelectWindow(WinMode.INSERT)));
+		btnAddTag.addClickListener(e -> {
+			SkillSelectWindow selectWindow = new SkillSelectWindow(WinMode.INSERT);
+			selectWindow.setItems(getUser().getSkillList());
+			UI.getCurrent().addWindow(selectWindow);
+		});
 		Button btnDelTag = new Button("Удалить тэг");
 		btnDelTag.setIcon(VaadinIcons.MINUS);
-		btnDelTag.addClickListener(e -> UI.getCurrent().addWindow(new SkillSelectWindow(WinMode.DELETE)));
+		btnDelTag.addClickListener(e -> {
+			SkillSelectWindow selectWindow = new SkillSelectWindow(WinMode.DELETE);
+			selectWindow.setItems(getSelectedItem().getSkillList());
+			UI.getCurrent().addWindow(selectWindow);
+		});
 		buttonTagsLayout.addComponents(btnAddTag, btnDelTag);
 		tagsLayout.addComponents(tagsList, buttonTagsLayout);
 		tabSheet.addTab(tagsLayout, "Список тэгов", VaadinIcons.TAGS);
@@ -116,19 +137,17 @@ public class DiaryPage extends AbstractView<Diary> {
 		Button btnFilter = new Button("Фильтр тэгов");
 		btnFilter.setIcon(VaadinIcons.FILTER);
 		btnFilter.setWidth(Tools.BUTTON_WIDTH);
-		btnFilter.addClickListener(e -> UI.getCurrent().addWindow(new DiaryFilterWindow()));
+		btnFilter.addClickListener(e -> UI.getCurrent().addWindow(new DiaryFilterWindow(Beans.getCurrentUser().getSkillList())));
 		buttonLayout.addComponents(btnFind, btnFilter);
 		buttonLayout.setMargin(false);
 		return buttonLayout;
 	}
 	
 	@Override
-	public void beforeClientResponse(boolean initial) {
-		super.beforeClientResponse(initial);
-		Set<Diary> list = Beans.getCurrentUser().getDiaryList();
-		grid.setItems(list);
-		grid.getDataProvider().refreshAll();
-		grid.setItems(list);
+	public void initData() {
+		dataProvider.getItems().clear();
+		dataProvider.getItems().addAll(getUser().getDiaryList());
+		
 		grid.addSelectionListener(event -> {
 			if(event.getFirstSelectedItem().isPresent()) {
 				setSelectedItem(event.getFirstSelectedItem().get());
@@ -158,5 +177,43 @@ public class DiaryPage extends AbstractView<Diary> {
 			tabView.setSource(new StreamResource(() -> new ByteArrayInputStream("".getBytes()), "tempnull.html"));
 		}
 		tagsList.getDataProvider().refreshAll();
+		grid.getDataProvider().refreshAll();
+	}
+
+	@Override
+	protected Diary getEmptyItem() {
+		Diary diary = new Diary();
+		diary.setUser(Beans.getCurrentUser());
+		return diary;
+	}
+
+	@Override
+	protected AbstractWindow<Diary> getInsertWindow() {
+		DiaryWindow diaryWindow = new DiaryWindow(getEmptyItem(), WinMode.INSERT);
+		return diaryWindow;
+	}
+
+	@Override
+	protected AbstractWindow<Diary> getUpdateWindow() {
+		DiaryWindow diaryWindow = new DiaryWindow(getSelectedItem(), WinMode.UPDATE);
+		return diaryWindow;
+	}
+
+	@Override
+	protected AbstractWindow<Diary> getDeleteWindow() {
+		DiaryWindow diaryWindow = new DiaryWindow(getSelectedItem(), WinMode.DELETE);
+		return diaryWindow;
+	}
+
+	@Override
+	protected void addItem(Diary item) {
+		dataProvider.getItems().add(item);
+		getUser().getDiaryList().add(item);
+	}
+
+	@Override
+	protected void removeItem(Diary item) {
+		dataProvider.getItems().remove(item);
+		getUser().getDiaryList().remove(item);
 	}
 }

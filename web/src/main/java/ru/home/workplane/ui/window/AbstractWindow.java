@@ -8,6 +8,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import ru.home.workplane.beans.Beans;
+import ru.home.workplane.ui.enums.ActionType;
 import ru.home.workplane.ui.enums.WinMode;
 
 public abstract class AbstractWindow<T> extends Window {
@@ -15,15 +16,20 @@ public abstract class AbstractWindow<T> extends Window {
 	protected Button btnOK, btnCancel;
 	private VerticalLayout layout;
 	private WinMode mode;
+	private ActionType action;
+	private T selectedItem;
 	
 	public AbstractWindow() {
 		super();
+		mode = WinMode.NONE;
+		action = ActionType.CANCEL;
 		init();
 	}
 	
-	public AbstractWindow(WinMode mode, String title) {
+	public AbstractWindow(T selectedItem, WinMode mode, String title) {
 		super();
 		this.mode = mode;
+		this.selectedItem = selectedItem; 
 		
 		switch(mode) {
 		case INSERT:
@@ -34,10 +40,12 @@ public abstract class AbstractWindow<T> extends Window {
 			setCaption("Изменить " + title);
 			setIcon(VaadinIcons.EDIT);
 			break;
-		default:
+		case DELETE:
 			setCaption("Удалить " + title);
 			setIcon(VaadinIcons.MINUS);
-			break;	
+			break;
+		default:
+			break;
 		}
 		
 		init();
@@ -60,19 +68,28 @@ public abstract class AbstractWindow<T> extends Window {
 			switch(mode) {
 			case INSERT:
 				insert();
+				action = ActionType.INSERT;
 				break;
 			case UPDATE:
 				update();
+				action = ActionType.UPDATE;
 				break;
-			default:
+			case DELETE:
 				delete();
-				break;				
+				action = ActionType.DELETE;
+				break;	
+			default:
+				action = ActionType.CANCEL;
+				break;
 			}
 			close();
 		});
 		btnCancel = new Button("Отмена");
 		btnCancel.setIcon(VaadinIcons.CLOSE);	
-		btnCancel.addClickListener(e -> close());
+		btnCancel.addClickListener(e -> {
+			action = ActionType.CANCEL;
+			close();
+		});
 		buttonLayout.addComponents(btnOK, btnCancel);
 
 		Component c = getCentral();
@@ -84,17 +101,28 @@ public abstract class AbstractWindow<T> extends Window {
 	private void insert() {
 		T item = getItem();
 		Beans.insert(item);
+		selectedItem = item;
 	}
 	private void update() {
 		T item = getItem();
-		Beans.update(item);		
+		Beans.update(item);
+		selectedItem = item;
 	}
 	private void delete() {
 		T item = getItem();
-		Beans.delete(item);				
+		Beans.delete(item);
+		selectedItem = null;
 	}
 	
 	protected abstract Component getCentral();
 	protected abstract void setDeleteMode();
 	protected abstract T getItem();
+
+	public T getSelectedItem() {
+		return selectedItem;
+	}
+
+	public ActionType getAction() {
+		return action;
+	}
 }

@@ -1,8 +1,9 @@
 package ru.home.workplane.ui.view;
 
-import java.util.Set;
+import java.util.HashSet;
 
 import com.vaadin.data.TreeData;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.provider.TreeDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
@@ -24,6 +25,7 @@ import ru.home.workplane.model.Content;
 import ru.home.workplane.model.Paragraph;
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.ui.enums.WinMode;
+import ru.home.workplane.ui.window.AbstractWindow;
 import ru.home.workplane.ui.window.BookFilterWindow;
 import ru.home.workplane.ui.window.BookFindWindow;
 import ru.home.workplane.ui.window.BookWindow;
@@ -33,25 +35,31 @@ import ru.home.workplane.util.Tools;
 
 public class BookPage extends AbstractView<Book> {
 	private static final long serialVersionUID = 1L;
-	private TreeData<Paragraph> data;
 	private Grid<Book> gridBook;
+	private ListDataProvider<Book> bookDataProvider;
 	private ListSelect<Skill> tagsList;
 	private TreeGrid<Paragraph> gridContent;
 	private TreeDataProvider<Paragraph> dataProvider;
+	private Paragraph selectedParagraph;
 
 	public BookPage() {
 		super("Книги");
-		btnEdit.addClickListener(e -> UI.getCurrent().addWindow(new BookWindow(WinMode.UPDATE)));
-		btnAdd.addClickListener(e -> UI.getCurrent().addWindow(new BookWindow(WinMode.INSERT)));
-		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new BookWindow(WinMode.DELETE)));
+		selectedParagraph = null;
 	}
 
 	@Override
 	protected Component getCentral() {
+		gridContent = new TreeGrid<>();
+		dataProvider = new TreeDataProvider<>(new TreeData<>());
+		gridContent.setDataProvider(dataProvider);
+		
+		gridBook = new Grid<>();
+		bookDataProvider = new ListDataProvider<>(new HashSet<Book>());
+		gridBook.setDataProvider(bookDataProvider);
+
 		VerticalSplitPanel gridPanel = new VerticalSplitPanel();
 		
 		VerticalLayout bookLayout = new VerticalLayout();
-		gridBook = new Grid<>();
 		gridBook.setCaption("Список книг");
 		gridBook.setWidth("100%");
 		gridBook.addColumn(Book::getTitle).setCaption("Название");
@@ -66,25 +74,21 @@ public class BookPage extends AbstractView<Book> {
 		TabSheet tabSheet = new TabSheet();
 		
 		VerticalLayout contentLayout = new VerticalLayout();
-		gridContent = new TreeGrid<>();
 		gridContent.setCaption("Содержание");
 		gridContent.setWidth("100%");
-		data = new TreeData<>();
-		dataProvider = new TreeDataProvider<>(data);
-		gridContent.setDataProvider(dataProvider);
 		gridContent.addColumn(Paragraph::getNumber).setCaption("Номер");
 		gridContent.addColumn(Paragraph::getTitle).setCaption("Название");
 		gridContent.addColumn(Paragraph::getPage).setCaption("Страница").setRenderer(new NumberRenderer());
 		HorizontalLayout buttonContentLayout = new HorizontalLayout();
 		Button btnEditParagraph = new Button("Изменить параграф");
 		btnEditParagraph.setIcon(VaadinIcons.EDIT);
-		btnEditParagraph.addClickListener(e -> UI.getCurrent().addWindow(new ParagraphWindow(WinMode.UPDATE)));
+		btnEditParagraph.addClickListener(e -> UI.getCurrent().addWindow(new ParagraphWindow(new Paragraph(), WinMode.UPDATE)));
 		Button btnAddParagraph = new Button("Добавить параграф");
 		btnAddParagraph.setIcon(VaadinIcons.PLUS);
-		btnAddParagraph.addClickListener(e -> UI.getCurrent().addWindow(new ParagraphWindow(WinMode.INSERT)));
+		btnAddParagraph.addClickListener(e -> UI.getCurrent().addWindow(new ParagraphWindow(selectedParagraph, WinMode.INSERT)));
 		Button btnDelParagraph = new Button("Удалить параграф");
 		btnDelParagraph.setIcon(VaadinIcons.MINUS);
-		btnDelParagraph.addClickListener(e -> UI.getCurrent().addWindow(new ParagraphWindow(WinMode.DELETE)));
+		btnDelParagraph.addClickListener(e -> UI.getCurrent().addWindow(new ParagraphWindow(selectedParagraph, WinMode.DELETE)));
 		buttonContentLayout.addComponents(btnEditParagraph, btnAddParagraph, btnDelParagraph);		
 		contentLayout.addComponents(gridContent, buttonContentLayout);
 		tabSheet.addTab(contentLayout, "Содержание");
@@ -97,10 +101,18 @@ public class BookPage extends AbstractView<Book> {
 		HorizontalLayout buttonTagsLayout = new HorizontalLayout();
 		Button btnAddTag = new Button("Добавить тэг");
 		btnAddTag.setIcon(VaadinIcons.PLUS);
-		btnAddTag.addClickListener(e -> UI.getCurrent().addWindow(new SkillSelectWindow(WinMode.INSERT)));
+		btnAddTag.addClickListener(e -> {
+			SkillSelectWindow selectWindow = new SkillSelectWindow(WinMode.INSERT);
+			selectWindow.setItems(getUser().getSkillList());
+			UI.getCurrent().addWindow(selectWindow);
+		});
 		Button btnDelTag = new Button("Удалить тэг");
 		btnDelTag.setIcon(VaadinIcons.MINUS);
-		btnDelTag.addClickListener(e -> UI.getCurrent().addWindow(new SkillSelectWindow(WinMode.DELETE)));
+		btnDelTag.addClickListener(e -> {
+			SkillSelectWindow selectWindow = new SkillSelectWindow(WinMode.DELETE);
+			selectWindow.setItems(getSelectedItem().getSkillList());
+			UI.getCurrent().addWindow(selectWindow);
+		});
 		buttonTagsLayout.addComponents(btnAddTag, btnDelTag);
 		tagsLayout.addComponents(tagsList, buttonTagsLayout);
 		tabSheet.addTab(tagsLayout, "Список тэгов", VaadinIcons.TAGS);
@@ -118,17 +130,16 @@ public class BookPage extends AbstractView<Book> {
 		Button btnFilter = new Button("Фильтр тэгов");
 		btnFilter.setIcon(VaadinIcons.FILTER);
 		btnFilter.setWidth(Tools.BUTTON_WIDTH);
-		btnFilter.addClickListener(e -> UI.getCurrent().addWindow(new BookFilterWindow()));		
+		btnFilter.addClickListener(e -> UI.getCurrent().addWindow(new BookFilterWindow(Beans.getCurrentUser().getSkillList())));		
 		buttonLayout.addComponents(btnFind, btnFilter);
 		buttonLayout.setMargin(false);
 		return buttonLayout;
 	}
 
 	@Override
-	public void beforeClientResponse(boolean initial) {
-		super.beforeClientResponse(initial);
-		Set<Book> bookList = Beans.getCurrentUser().getBookList();
-		gridBook.setItems(bookList);
+	public void initData() {
+		bookDataProvider.getItems().clear();
+		bookDataProvider.getItems().addAll(getUser().getBookList());
 		gridBook.addSelectionListener(event -> {
 			if(event.getFirstSelectedItem().isPresent()) {
 				setSelectedItem(event.getFirstSelectedItem().get());
@@ -138,6 +149,13 @@ public class BookPage extends AbstractView<Book> {
 			refresh();
 		});
 
+		gridContent.addSelectionListener(event -> {
+			if(event.getFirstSelectedItem().isPresent()) {
+				selectedParagraph = event.getFirstSelectedItem().get();
+			} else {
+				selectedParagraph = null;
+			}			
+		});
 	}
 	
 	@Override
@@ -151,7 +169,7 @@ public class BookPage extends AbstractView<Book> {
 			Content content = new Content();
 			content.unmarshal(selectedItem.getContent());
 			for(Paragraph paragraph : content.getParagraphList()) {
-				data.addItem(null, paragraph);
+				dataProvider.getTreeData().addItem(null, paragraph);
 				if(paragraph != null && paragraph.getParagraphList() != null && paragraph.getParagraphList().size() > 0) {
 					addParagraph(paragraph);
 				}
@@ -162,14 +180,52 @@ public class BookPage extends AbstractView<Book> {
 		}
 		tagsList.getDataProvider().refreshAll();
 		dataProvider.refreshAll();
+		bookDataProvider.refreshAll();
 	}
 	
 	private void addParagraph(Paragraph paragraph) {
 		for(Paragraph p : paragraph.getParagraphList()) {
-			data.addItems(paragraph, p);
+			dataProvider.getTreeData().addItems(paragraph, p);
 			if(p != null && p.getParagraphList() != null && p.getParagraphList().size() > 0) {
 				addParagraph(p);
 			}
 		}
+	}
+
+	@Override
+	protected Book getEmptyItem() {
+		Book book = new Book();
+		book.setUser(getUser());
+		return book;
+	}
+
+	@Override
+	protected AbstractWindow<Book> getInsertWindow() {
+		BookWindow bookWindow = new BookWindow(getEmptyItem(), WinMode.INSERT);
+		return bookWindow;
+	}
+
+	@Override
+	protected AbstractWindow<Book> getUpdateWindow() {
+		BookWindow bookWindow = new BookWindow(getSelectedItem(), WinMode.UPDATE);
+		return bookWindow;
+	}
+
+	@Override
+	protected AbstractWindow<Book> getDeleteWindow() {
+		BookWindow bookWindow = new BookWindow(getSelectedItem(), WinMode.DELETE);
+		return bookWindow;
+	}
+
+	@Override
+	protected void addItem(Book item) {
+		bookDataProvider.getItems().add(item);
+		getUser().getBookList().add(item);
+	}
+
+	@Override
+	protected void removeItem(Book item) {
+		bookDataProvider.getItems().remove(item);
+		getUser().getBookList().remove(item);
 	}
 }

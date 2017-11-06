@@ -6,12 +6,12 @@ import com.vaadin.ui.TextField;
 
 import ru.home.workplane.util.Tools;
 
-public class BookFindWindow extends AbstractWindow {
+public class BookFindWindow extends AbstractWindow<String> {
 	private static final long serialVersionUID = 1L;
+	private TextField textFind;
 
 	public BookFindWindow() {
 		super();
-		
 		setCaption("Поиск по строке");
 		setHeight("180px");
 		setWidth(Tools.SHORT_WIDTH);
@@ -20,7 +20,7 @@ public class BookFindWindow extends AbstractWindow {
 	
 	@Override
 	protected Component getCentral() {
-		TextField textFind = new TextField("Введите строку для поиска");
+		textFind = new TextField("Введите строку для поиска");
 		textFind.setWidth("100%");
 		return textFind;
 	}
@@ -28,7 +28,10 @@ public class BookFindWindow extends AbstractWindow {
 	@Override
 	protected void setDeleteMode() {
 		// TODO Auto-generated method stub
-
 	}
 
+	@Override
+	protected String getItem() {
+		return textFind.getValue();
+	}
 }

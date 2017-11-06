@@ -43,7 +43,11 @@ public class Diary implements Serializable {
 	
 	public Diary() {
 		super();
+		title = "";
+		date = new Date();
+		content = "";
 		skillList = new HashSet<>();
+		project = null;
 		id = 0L;
 	}
 

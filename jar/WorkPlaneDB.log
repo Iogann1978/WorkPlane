@@ -37,7 +37,7 @@ create table link_diary_skill (diary_id bigint not null, skill_id bigint not nul
 create table link_project_skill (project_id bigint not null, skill_id bigint not null, primary key (project_id, skill_id))
 create table Log (id bigint not null, dateEnd timestamp, dateStart timestamp, description LONGVARCHAR, project_id bigint, primary key (id))
 create table Organization (id bigint not null, dateEnd timestamp, dateStart timestamp, name varchar(255), user_id bigint, primary key (id))
-create table Project (id bigint not null, dateEnd timestamp, dateStart timestamp, description LONGVARCHAR, name varchar(255), percent double, state integer, organization_id bigint, primary key (id))
+create table Project (id bigint not null, dateEnd timestamp, dateStart timestamp, description LONGVARCHAR, name varchar(255), percent integer not null, state integer, organization_id bigint, primary key (id))
 create table Skill (id bigint not null, title varchar(255), user_id bigint, primary key (id))
 create table User (id bigint not null, login varchar(255), passHash varchar(255), primary key (id))
 alter table Book add constraint FKpsgrhw51v8on5lbyoo5qdjypq foreign key (user_id) references User
@@ -92,54 +92,4 @@ COMMIT
 DELETE FROM BOOK WHERE ID=10
 INSERT INTO BOOK VALUES(10,'none','<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\u000a<content>\u000a    <paragraphList number="1" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 1" page="1">\u000a        <paragraphList number="1.2" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 1.2" page="3"/>\u000a        <paragraphList number="1.1" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 1.1" page="2"/>\u000a    </paragraphList>\u000a    <paragraphList number="2" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 2" page="20">\u000a        <paragraphList number="2.2" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 2.2" page="13"/>\u000a        <paragraphList number="2.1" title="\u0420\u045f\u0420\u00b0\u0421\u0402\u0420\u00b0\u0420\u0456\u0421\u0402\u0420\u00b0\u0421\u201e 2.1" page="12"/>\u000a    </paragraphList>\u000a</content>\u000a',260,'none',FALSE,'Delphi for beginner',2005,1)
 INSERT INTO LINK_BOOK_SKILL VALUES(10,4)
-COMMIT
-INSERT INTO DIARY VALUES(11,'<html><body><h1>\u0417\u0430\u043f\u0438\u0441\u044c 1</h1></body></html>','2017-10-31 15:53:11.493000','\u0417\u0430\u043f\u0438\u0441\u044c 1',1)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 12
-COMMIT
-INSERT INTO DIARY VALUES(12,'<html><body><h1>\u0417\u0430\u043f\u0438\u0441\u044c 2</h1></body></html>','2017-10-31 15:53:11.493000','\u0417\u0430\u043f\u0438\u0441\u044c 2',1)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 13
-COMMIT
-INSERT INTO LINK_DIARY_SKILL VALUES(11,2)
-COMMIT
-INSERT INTO LINK_DIARY_SKILL VALUES(12,4)
-COMMIT
-INSERT INTO ORGANIZATION VALUES(13,'2017-10-31 15:53:11.524000','2017-10-31 15:53:11.524000','\u0411\u0430\u043d\u043a \u0421\u0442\u0430\u0440\u044b\u0439 \u041a\u0440\u0435\u043c\u043b\u044c',1)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 14
-COMMIT
-INSERT INTO ORGANIZATION VALUES(14,'2017-10-31 15:53:11.524000','2017-10-31 15:53:11.524000','\u0420\u043e\u0441\u0442 \u0411\u0430\u043d\u043a',1)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 15
-COMMIT
-INSERT INTO PROJECT VALUES(15,'2017-10-31 15:53:11.524000','2017-10-31 15:53:11.524000','\u041f\u0440\u043e\u0435\u043a\u0442 1','\u041f\u0440\u043e\u0435\u043a\u0442 1',0.3E0,0,13)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 16
-COMMIT
-INSERT INTO PROJECT VALUES(16,'2017-10-31 15:53:11.524000','2017-10-31 15:53:11.524000','\u041f\u0440\u043e\u0435\u043a\u0442 2','\u041f\u0440\u043e\u0435\u043a\u0442 2',0.7E0,4,14)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 17
-COMMIT
-INSERT INTO BUG VALUES(17,FALSE,'\u0411\u0430\u04332',15)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 18
-COMMIT
-INSERT INTO BUG VALUES(18,TRUE,'\u0411\u0430\u04331',15)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 19
-COMMIT
-INSERT INTO LOG VALUES(19,'2017-10-31 15:53:11.540000','2017-10-31 15:53:11.540000','\u041b\u043e\u0433 2',15)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 20
-COMMIT
-INSERT INTO LOG VALUES(20,'2017-10-31 15:53:11.540000','2017-10-31 15:53:11.540000','\u041b\u043e\u0433 1',15)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 21
-COMMIT
-INSERT INTO LINK_PROJECT_SKILL VALUES(15,2)
-COMMIT
-INSERT INTO BUG VALUES(21,TRUE,'\u0411\u0430\u04334',16)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 22
-COMMIT
-INSERT INTO BUG VALUES(22,FALSE,'\u0411\u0430\u04333',16)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 23
-COMMIT
-INSERT INTO LOG VALUES(23,'2017-10-31 15:53:11.540000','2017-10-31 15:53:11.540000','\u041b\u043e\u0433 3',16)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 24
-COMMIT
-INSERT INTO LOG VALUES(24,'2017-10-31 15:53:11.540000','2017-10-31 15:53:11.540000','\u041b\u043e\u0433 4',16)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 25
-COMMIT
-INSERT INTO LINK_PROJECT_SKILL VALUES(16,4)
 COMMIT

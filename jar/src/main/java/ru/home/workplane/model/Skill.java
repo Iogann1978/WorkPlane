@@ -30,6 +30,7 @@ public class Skill implements Serializable {
 	
 	public Skill() {
 		super();
+		title = "";
 		diaryList = new HashSet<>();
 		projectList = new HashSet<>();
 		bookList = new HashSet<>();

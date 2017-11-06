@@ -5,7 +5,6 @@ import java.util.Set;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 
-import ru.home.workplane.beans.Beans;
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.ui.enums.WinMode;
 import ru.home.workplane.util.Tools;
@@ -13,22 +12,19 @@ import ru.home.workplane.util.Tools;
 public class SkillSelectWindow extends AbstractWindow<Skill> {
 	private static final long serialVersionUID = 1L;
 	private ComboBox<Skill> cmbSkill;
-	private Skill selectedItem;
 
-	public SkillSelectWindow(Skill selectedItem, WinMode mode) {
-		super(mode, "опыт");
+	public SkillSelectWindow(WinMode mode) {
+		super(null, mode, "опыт");
 		setHeight("150px");
-		setWidth(Tools.SHORT_WIDTH);		
+		setWidth(Tools.SHORT_WIDTH);
 	}
 
 	@Override
 	protected Component getCentral() {
 		cmbSkill = new ComboBox<>();
-		Set<Skill> items = Beans.getCurrentUser().getSkillList();
-		cmbSkill.setItems(items);
 		cmbSkill.setWidth("100%");
-		cmbSkill.setSelectedItem(selectedItem);
-		cmbSkill.setEmptySelectionAllowed(false);
+		cmbSkill.setEmptySelectionAllowed(true);
+		cmbSkill.setEmptySelectionCaption("Не выбрано");
 		cmbSkill.setTextInputAllowed(false);
 		return cmbSkill;
 	}
@@ -42,4 +38,8 @@ public class SkillSelectWindow extends AbstractWindow<Skill> {
 	protected Skill getItem() {
 		return cmbSkill.getValue();
 	}
+
+	public void setItems(Set<Skill> items) {
+		cmbSkill.setItems(items);
+	}	
 }

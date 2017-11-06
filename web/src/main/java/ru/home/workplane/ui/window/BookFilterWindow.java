@@ -1,7 +1,6 @@
 package ru.home.workplane.ui.window;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.ComboBox;
@@ -10,27 +9,27 @@ import com.vaadin.ui.Component;
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.util.Tools;
 
-public class BookFilterWindow extends AbstractWindow {
+public class BookFilterWindow extends AbstractWindow<Skill> {
 	private static final long serialVersionUID = 1L;
+	private ComboBox<Skill> cmbSkill;
+	private Set<Skill> items;
 
-	public BookFilterWindow() {
+	public BookFilterWindow(Set<Skill> items) {
 		super();
 		setCaption("Фильтр по тэгам");
 		setHeight("150px");
 		setWidth(Tools.SHORT_WIDTH);
 		setIcon(VaadinIcons.FILTER);	
+		this.items = items;
 	}
 	
 	@Override
 	protected Component getCentral() {
-		ComboBox<Skill> cmbSkill = new ComboBox<>();
+		cmbSkill = new ComboBox<>();
 		cmbSkill.setWidth("100%");
 		cmbSkill.setTextInputAllowed(false);
-		cmbSkill.setEmptySelectionAllowed(false);
-		List<Skill> items = new ArrayList<>();
-		items.add(new Skill("Все записи", null));
 		cmbSkill.setItems(items);
-		cmbSkill.setSelectedItem(items.get(0));			
+		cmbSkill.setEmptySelectionCaption("Все записи");
 		return cmbSkill;
 	}
 
@@ -39,4 +38,8 @@ public class BookFilterWindow extends AbstractWindow {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	protected Skill getItem() {
+		return cmbSkill.getValue();
+	}
 }

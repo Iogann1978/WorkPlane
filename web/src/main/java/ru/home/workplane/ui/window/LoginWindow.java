@@ -12,8 +12,9 @@ import com.vaadin.ui.VerticalLayout;
 import ru.home.workplane.beans.Beans;
 import ru.home.workplane.util.Tools;
 
-public class LoginWindow extends AbstractWindow {
+public class LoginWindow extends AbstractWindow<String> {
 	private static final long serialVersionUID = 1L;
+	private TextField textLogin;
 
 	public LoginWindow() {
 		super();
@@ -27,13 +28,13 @@ public class LoginWindow extends AbstractWindow {
 	@Override
 	protected Component getCentral() {
 		VerticalLayout layout = new VerticalLayout();
-		TextField txtLogin = new TextField("Имя пользователя");
-		txtLogin.setWidth("100%");
-		PasswordField txtPassword = new PasswordField("Пароль");
-		txtPassword.setWidth("100%");
+		textLogin = new TextField("Имя пользователя");
+		textLogin.setWidth("100%");
+		PasswordField textPassword = new PasswordField("Пароль");
+		textPassword.setWidth("100%");
 		
 		btnOK.addClickListener(e -> {
-			if(Beans.login(txtLogin.getValue(), txtPassword.getValue())) {
+			if(Beans.login(textLogin.getValue(), textPassword.getValue())) {
 				close();
 			}
 			else {
@@ -43,13 +44,17 @@ public class LoginWindow extends AbstractWindow {
 		});
 		btnCancel.addClickListener(e -> UI.getCurrent().close());
 		
-		layout.addComponents(txtLogin, txtPassword);
+		layout.addComponents(textLogin, textPassword);
 		layout.setMargin(false);
 		return layout;
 	}
 
 	@Override
 	protected void setDeleteMode() {
-		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected String getItem() {
+		return textLogin.getValue();
 	}
 }

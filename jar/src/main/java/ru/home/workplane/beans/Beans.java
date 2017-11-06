@@ -10,6 +10,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import ru.home.workplane.model.Organization;
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.model.User;
 import ru.home.workplane.service.Service;
@@ -23,17 +24,17 @@ public class Beans {
 	}
 	
 	public static <T> void insert(T entity) {
-		Service<T> service = (Service<T>)context.getBean(entity.getClass());
+		Service<T> service = (Service<T>)context.getBean(entity.getClass().getSimpleName().toLowerCase() + "Service");
 		service.insert(entity);
 	}
 
 	public static <T> void update(T entity) {
-		Service<T> service = (Service<T>)context.getBean(entity.getClass());
+		Service<T> service = (Service<T>)context.getBean(entity.getClass().getSimpleName().toLowerCase() + "Service");
 		service.update(entity);
 	}
 	
 	public static <T> void delete(T entity) {
-		Service<T> service = (Service<T>)context.getBean(entity.getClass());
+		Service<T> service = (Service<T>)context.getBean(entity.getClass().getSimpleName().toLowerCase() + "Service");
 		service.delete(entity);
 	}
 	

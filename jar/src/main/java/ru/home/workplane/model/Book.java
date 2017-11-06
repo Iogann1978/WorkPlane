@@ -43,7 +43,14 @@ public class Book implements Serializable {
 	
 	public Book() {
 		super();
+		title = "";
+		pages = 1;
+		author = "";
+		publisher = "";
+		year = 1900;
 		skillList = new HashSet<>();
+		content = "";
+		studied = false;
 		id = 0L;
 	}
 

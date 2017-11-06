@@ -106,8 +106,8 @@ public class ModelTest {
 		}
 		
 		List<Project> prjList = new ArrayList<>();
-		prjList.addAll(Arrays.asList(new Project("Проект 1", new Date(), new Date(), "Проект 1", 0.3d, ProjectStates.PLANING, orgList.get(0)),
-				new Project("Проект 2", new Date(), new Date(), "Проект 2", 0.7d, ProjectStates.RELEASE, orgList.get(1))));
+		prjList.addAll(Arrays.asList(new Project("Проект 1", new Date(), new Date(), "Проект 1", 30, ProjectStates.PLANING, orgList.get(0)),
+				new Project("Проект 2", new Date(), new Date(), "Проект 2", 70, ProjectStates.RELEASE, orgList.get(1))));
 		for(Project prj : prjList) {
 			projectService.insert(prj);
 		}
@@ -152,6 +152,16 @@ public class ModelTest {
 		assertTrue(nuser.getLogin().equals("admin"));
 		String nhexDigest = Beans.getHashPass("123456");
 		assertTrue(nuser.getPassHash().equals(nhexDigest));
+		
+		Skill tempSkill = new Skill("test", user);
+		skillService.insert(tempSkill);
+		user.getSkillList().add(tempSkill);
+		userService.update(user);
+		skillService.delete(tempSkill);
+		user.getSkillList().remove(tempSkill);
+		userService.update(user);
+		Skill findSkill = skillService.findById(tempSkill.getId());
+		assertNull(findSkill);
 		
 		((ClassPathXmlApplicationContext)context).close();
 	}

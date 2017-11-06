@@ -1,6 +1,6 @@
 package ru.home.workplane.ui.window;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,10 +11,14 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
 import ru.home.workplane.model.Organization;
+import ru.home.workplane.model.ProjectReport;
 import ru.home.workplane.util.Tools;
 
-public class ProjectReportWindow extends AbstractWindow {
+public class ProjectReportWindow extends AbstractWindow<ProjectReport> {
 	private static final long serialVersionUID = 1L;
+	private DateField dateStart, dateEnd;
+	private ComboBox<Organization> cmbOrganization;
+	private Set<Organization> items;
 
 	public ProjectReportWindow() {
 		super();
@@ -28,20 +32,18 @@ public class ProjectReportWindow extends AbstractWindow {
 		VerticalLayout layout = new VerticalLayout();
 		
 		HorizontalLayout datesLayout = new HorizontalLayout();
-		DateField dateStart = new DateField("Дата начала");
+		dateStart = new DateField("Дата начала");
 		dateStart.setDateFormat(Tools.SHORT_DATE_FORMAT);
 		dateStart.setWidth("50%");
-		DateField dateEnd = new DateField("Дата окончания");
+		dateEnd = new DateField("Дата окончания");
 		dateEnd.setDateFormat(Tools.SHORT_DATE_FORMAT);
 		dateEnd.setWidth("50%");
 		datesLayout.addComponents(dateStart, dateEnd);
 		
-		ComboBox<Organization> cmbOrganization = new ComboBox<>("Организации");
+		cmbOrganization = new ComboBox<>("Организации");
 		cmbOrganization.setWidth("100%");
 		cmbOrganization.setEmptySelectionAllowed(false);
 		cmbOrganization.setTextInputAllowed(false);
-		Set<Organization> items = new HashSet<>();
-		items.add(new Organization("Банк", new Date(), new Date(), null));
 		cmbOrganization.setItems(items);
 		cmbOrganization.setEmptySelectionAllowed(true);
 		cmbOrganization.setEmptySelectionCaption("Все организации");		
@@ -53,6 +55,15 @@ public class ProjectReportWindow extends AbstractWindow {
 
 	@Override
 	protected void setDeleteMode() {
+	}
+
+	@Override
+	protected ProjectReport getItem() {
+		ProjectReport projectReport = new ProjectReport();
+		projectReport.setDateStart(Date.valueOf(dateStart.getValue()));
+		projectReport.setDateEnd(Date.valueOf(dateEnd.getValue()));
+		projectReport.setOrganization(cmbOrganization.getValue());
+		return projectReport;
 	}
 
 }

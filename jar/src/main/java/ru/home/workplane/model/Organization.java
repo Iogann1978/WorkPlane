@@ -29,6 +29,9 @@ public class Organization implements Serializable {
 	
 	public Organization() {
 		super();
+		name = "";
+		dateStart = new Date();
+		dateEnd = new Date();
 		projectList = new HashSet<>();
 		id = 0L;
 	}

@@ -10,30 +10,29 @@ import ru.home.workplane.util.Tools;
 public class SkillWindow extends AbstractWindow<Skill> {
 	private static final long serialVersionUID = 1L;
 	private TextField textSkill;
-	private Skill selectedItem; 
 	
 	public SkillWindow(Skill selectedItem, WinMode mode) {
-		super(mode, "опыт");
+		super(selectedItem, mode, "опыт");
 		setHeight("180px");
 		setWidth(Tools.SHORT_WIDTH);
-		this.selectedItem = selectedItem; 
 	}
 
 	@Override
 	protected Component getCentral() {
 		textSkill = new TextField("Название:");
 		textSkill.setWidth("100%");
-		textSkill.setValue(selectedItem.getTitle());
+		textSkill.setValue(getSelectedItem().getTitle());
 		return textSkill;
 	}
 
 	@Override
 	protected void setDeleteMode() {
-		textSkill.setEnabled(false);
+		textSkill.setReadOnly(true);
 	}
 
 	@Override
 	protected Skill getItem() {
+		Skill selectedItem = getSelectedItem(); 
 		selectedItem.setTitle(textSkill.getValue());
 		return selectedItem;
 	}

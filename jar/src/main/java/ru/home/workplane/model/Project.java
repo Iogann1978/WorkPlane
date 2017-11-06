@@ -27,7 +27,7 @@ public class Project implements Serializable {
 	@Column(columnDefinition = "LONGVARCHAR")
 	private String description;
 	private Date dateStart, dateEnd;
-	private Double percent;
+	private int percent;
 	private ProjectStates state;
 	@ManyToMany
 	@JoinTable(name = "link_project_skill", joinColumns = {@JoinColumn(name = "project_id")}, inverseJoinColumns = {@JoinColumn(name = "skill_id")})
@@ -42,7 +42,22 @@ public class Project implements Serializable {
 	@JoinColumn(name="organization_id")
 	private Organization organization;
 	
-	public Project(String name, Date dateStart, Date dateEnd, String description, Double percent, ProjectStates state, Organization organization) {
+	public Project() {
+		super();
+		name = "";
+		description= "";
+		dateStart = new Date();
+		dateEnd = new Date();
+		percent = 0;
+		state = ProjectStates.ORGANIZATION;
+		skillList = new HashSet<>();
+		bugList = new HashSet<>();
+		logList = new HashSet<>();
+		obstacleList = new HashSet<>();
+		id = 0L;
+	}
+	
+	public Project(String name, Date dateStart, Date dateEnd, String description, int percent, ProjectStates state, Organization organization) {
 		super();		
 		this.name = name;
 		this.dateStart = dateStart;
@@ -59,20 +74,11 @@ public class Project implements Serializable {
 		this.name = organization.getName();
 		this.dateStart = organization.getDateStart();
 		this.dateEnd = organization.getDateEnd();
-		this.percent = 0.0d;
+		this.percent = 0;
 		this.state = ProjectStates.ORGANIZATION;
 		this.id = 0L;
 	}
-	
-	public Project() {
-		super();
-		skillList = new HashSet<>();
-		bugList = new HashSet<>();
-		logList = new HashSet<>();
-		obstacleList = new HashSet<>();
-		id = 0L;
-	}
-	
+		
 	public long getId() {
 		return id;
 	}
@@ -113,11 +119,15 @@ public class Project implements Serializable {
 		this.dateEnd = dateEnd;
 	}
 
-	public Double getPercent() {
+	public int getPercent() {
 		return percent;
 	}
 
-	public void setPercent(Double percent) {
+	public Double getPercentDouble() {
+		return Double.valueOf(percent/100.0d);
+	}
+
+	public void setPercent(int percent) {
 		this.percent = percent;
 	}
 

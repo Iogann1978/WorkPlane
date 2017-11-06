@@ -3,10 +3,16 @@ package ru.home.workplane.ui.view;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.vaadin.data.TreeData;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.provider.TreeDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.StreamResource;
@@ -36,6 +42,7 @@ import ru.home.workplane.model.Organization;
 import ru.home.workplane.model.Project;
 import ru.home.workplane.model.Skill;
 import ru.home.workplane.ui.enums.WinMode;
+import ru.home.workplane.ui.window.AbstractWindow;
 import ru.home.workplane.ui.window.BugWindow;
 import ru.home.workplane.ui.window.LogWindow;
 import ru.home.workplane.ui.window.ObstacleWindow;
@@ -47,40 +54,60 @@ import ru.home.workplane.util.Tools;
 public class ProjectPage extends AbstractView<Project> {
 	private static final long serialVersionUID = 1L;
 	private TreeGrid<Project> grid;
-	private TreeData<Project> data;
+	private TreeDataProvider<Project> dataProvider;
 	private ListSelect<Skill> tagsList;
-	private Grid<Bug> bugsGrid;
+	private Grid<Bug> bugGrid;
 	private Grid<Log> logGrid;
 	private ListSelect<Diary> obstacleList;
 	private TextArea textEdit;
 	private RichTextArea htmlEdit;
 	private BrowserFrame tabView;
 	private BrowserFrame obstacleView;
+	private Bug selectedBug;
+	private Log selectedLog;
+	private Diary selectedObstacle;
+	private Project selectedParent;
+	private Map<Long, Project> parentMap;
+	private Map<Long, Organization> orgMap;
+	private ListDataProvider<Bug> bugDataProvider;
+	private ListDataProvider<Log> logDataProvider;
 
 	public ProjectPage() {
 		super("Менеджер проектов");
-		btnAdd.addClickListener(e -> UI.getCurrent().addWindow(new ProjectWindow(WinMode.INSERT)));
-		btnEdit.addClickListener(e -> UI.getCurrent().addWindow(new ProjectWindow(WinMode.UPDATE)));		
-		btnDel.addClickListener(e -> UI.getCurrent().addWindow(new ProjectWindow(WinMode.DELETE)));
+		selectedBug = null;
+		selectedLog = null;
+		selectedObstacle = null;
+		selectedParent = null;
 	}
 
 	@Override
 	protected Component getCentral() {
+		parentMap = new HashMap<>();
+		orgMap = new HashMap<>();
+		
+		grid = new TreeGrid<>();
+		dataProvider = new TreeDataProvider<>(new TreeData<>());
+ 		grid.setDataProvider(dataProvider);
+ 		
+ 		bugGrid = new Grid<>();
+		bugDataProvider = new ListDataProvider<Bug>(new HashSet<Bug>());
+		bugGrid.setDataProvider(bugDataProvider);
+		
+		logGrid = new Grid<>();
+		logDataProvider = new ListDataProvider<Log>(new HashSet<Log>());
+		logGrid.setDataProvider(logDataProvider);		
+		
 		VerticalSplitPanel gridPanel = new VerticalSplitPanel();
 		
 		VerticalLayout projectLayout = new VerticalLayout();
-		grid = new TreeGrid<>();
 		grid.setCaption("Список проектов");
 		grid.setWidth("100%");
-		data = new TreeData<>();
-		TreeDataProvider<Project> dataProvider = new TreeDataProvider<>(data);
- 		grid.setDataProvider(dataProvider);
  		grid.addColumn(Project::getState).setRenderer((state) -> Tools.getResource(state).getHtml(), new HtmlRenderer());
 		grid.addColumn(Project::getName).setCaption("Имя проекта");
 		grid.addColumn(Project::getStateName).setCaption("Состояние");
 		grid.addColumn(Project::getDateStart).setCaption("Дата начала").setRenderer(new DateRenderer(new SimpleDateFormat(Tools.SHORT_DATE_FORMAT)));
 		grid.addColumn(Project::getDateEnd).setCaption("Дата окончания").setRenderer(new DateRenderer(new SimpleDateFormat(Tools.SHORT_DATE_FORMAT)));
-		grid.addColumn(Project::getPercent).setCaption("Процент выполнения").setRenderer(new ProgressBarRenderer());
+		grid.addColumn(Project::getPercentDouble).setCaption("Процент выполнения").setRenderer(new ProgressBarRenderer());
 		projectLayout.addComponent(grid);
 		projectLayout.setMargin(false);
 		
@@ -117,32 +144,40 @@ public class ProjectPage extends AbstractView<Project> {
 		HorizontalLayout buttonTagsLayout = new HorizontalLayout();
 		Button btnAddTag = new Button("Добавить тэг");
 		btnAddTag.setIcon(VaadinIcons.PLUS);
-		btnAddTag.addClickListener(e -> UI.getCurrent().addWindow(new SkillSelectWindow(WinMode.INSERT)));
+		btnAddTag.addClickListener(e -> {
+			SkillSelectWindow selectWindow = new SkillSelectWindow(WinMode.INSERT);
+			selectWindow.setItems(getUser().getSkillList());
+			UI.getCurrent().addWindow(selectWindow);
+		});
 		Button btnDelTag = new Button("Удалить тэг");
 		btnDelTag.setIcon(VaadinIcons.MINUS);
-		btnDelTag.addClickListener(e -> UI.getCurrent().addWindow(new SkillSelectWindow(WinMode.DELETE)));
+		btnDelTag.addClickListener(e -> {
+			SkillSelectWindow selectWindow = new SkillSelectWindow(WinMode.DELETE);
+			selectWindow.setItems(getSelectedItem().getSkillList());
+			UI.getCurrent().addWindow(selectWindow);
+		});
 		buttonTagsLayout.addComponents(btnAddTag, btnDelTag);
 		tagsLayout.addComponents(tagsList, buttonTagsLayout);
 		tabSheet.addTab(tagsLayout, "Список тэгов", VaadinIcons.TAGS);
 
 		VerticalLayout bugsLayout = new VerticalLayout();
-		bugsGrid = new Grid<>();
-		bugsGrid.setCaption("Найденные ошибки");
-		bugsGrid.addColumn(Bug::getBug).setRenderer((source) -> (source.isFlag()) ? "<html><body>"+source.getName()+"</body></html>" : "<html><body><strike>"+source.getName()+"</strike></body></html>", new HtmlRenderer());
-		bugsGrid.setWidth("100%");
-		bugsGrid.setHeight("100%");
+		bugGrid = new Grid<>();
+		bugGrid.setCaption("Найденные ошибки");
+		bugGrid.addColumn(Bug::getBug).setRenderer((source) -> (source.isFlag()) ? "<html><body>"+source.getName()+"</body></html>" : "<html><body><strike>"+source.getName()+"</strike></body></html>", new HtmlRenderer());
+		bugGrid.setWidth("100%");
+		bugGrid.setHeight("100%");
 		HorizontalLayout buttonBugsLayout = new HorizontalLayout();
 		Button btnAddBug = new Button("Добавить баг");
 		btnAddBug.setIcon(VaadinIcons.PLUS);
-		btnAddBug.addClickListener(e -> UI.getCurrent().addWindow(new BugWindow(WinMode.INSERT)));
+		btnAddBug.addClickListener(e -> UI.getCurrent().addWindow(new BugWindow(new Bug("", false, getSelectedItem()), WinMode.INSERT)));
 		Button btnDelBug = new Button("Удалить баг");
 		btnDelBug.setIcon(VaadinIcons.MINUS);
-		btnDelBug.addClickListener(e -> UI.getCurrent().addWindow(new BugWindow(WinMode.DELETE)));
+		btnDelBug.addClickListener(e -> UI.getCurrent().addWindow(new BugWindow(selectedBug, WinMode.DELETE)));
 		Button btnEditBug = new Button("Изменить баг");
 		btnEditBug.setIcon(VaadinIcons.EDIT);
-		btnEditBug.addClickListener(e -> UI.getCurrent().addWindow(new BugWindow(WinMode.UPDATE)));
+		btnEditBug.addClickListener(e -> UI.getCurrent().addWindow(new BugWindow(selectedBug, WinMode.UPDATE)));
 		buttonBugsLayout.addComponents(btnEditBug, btnAddBug, btnDelBug);
-		bugsLayout.addComponents(bugsGrid, buttonBugsLayout);
+		bugsLayout.addComponents(bugGrid, buttonBugsLayout);
 		tabSheet.addTab(bugsLayout, "Найденные ошибки", VaadinIcons.BUG);
 
 		VerticalLayout logLayout = new VerticalLayout();
@@ -156,11 +191,13 @@ public class ProjectPage extends AbstractView<Project> {
 		HorizontalLayout buttonLogLayout = new HorizontalLayout();
 		Button btnAddLog = new Button("Добавить запись");
 		btnAddLog.setIcon(VaadinIcons.PLUS);
-		btnAddLog.addClickListener(e -> UI.getCurrent().addWindow(new LogWindow(WinMode.INSERT)));
+		btnAddLog.addClickListener(e -> UI.getCurrent().addWindow(new LogWindow(new Log(), WinMode.INSERT)));
 		Button btnDelLog = new Button("Удалить запись");
 		btnDelLog.setIcon(VaadinIcons.MINUS);
+		btnDelLog.addClickListener(e -> UI.getCurrent().addWindow(new LogWindow(selectedLog, WinMode.DELETE)));
 		Button btnEditLog = new Button("Изменить запись");
 		btnEditLog.setIcon(VaadinIcons.EDIT);
+		btnEditLog.addClickListener(e -> UI.getCurrent().addWindow(new LogWindow(selectedLog, WinMode.UPDATE)));
 		buttonLogLayout.addComponents(btnEditLog, btnAddLog, btnDelLog);
 		logLayout.addComponents(logGrid, buttonLogLayout);
 		tabSheet.addTab(logLayout, "Журнал работ", VaadinIcons.LIST);
@@ -177,14 +214,11 @@ public class ProjectPage extends AbstractView<Project> {
 		HorizontalLayout buttonObstacleLayout = new HorizontalLayout();
 		Button btnAddObstacle = new Button("Добавить запись");
 		btnAddObstacle.setIcon(VaadinIcons.PLUS);
-		btnAddObstacle.addClickListener(e -> UI.getCurrent().addWindow(new ObstacleWindow(WinMode.INSERT)));
+		btnAddObstacle.addClickListener(e -> UI.getCurrent().addWindow(new ObstacleWindow(Beans.getCurrentUser().getDiaryList(), WinMode.INSERT)));
 		Button btnDelObstacle = new Button("Удалить запись");
 		btnDelObstacle.setIcon(VaadinIcons.MINUS);
-		btnDelObstacle.addClickListener(e -> UI.getCurrent().addWindow(new ObstacleWindow(WinMode.DELETE)));
-		Button btnEditObstacle = new Button("Изменить запись");
-		btnEditObstacle.setIcon(VaadinIcons.EDIT);
-		btnEditObstacle.addClickListener(e -> UI.getCurrent().addWindow(new ObstacleWindow(WinMode.UPDATE)));
-		buttonObstacleLayout.addComponents(btnEditObstacle, btnAddObstacle, btnDelObstacle);
+		btnDelObstacle.addClickListener(e -> UI.getCurrent().addWindow(new ObstacleWindow(new HashSet<Diary>(Arrays.asList(selectedObstacle)),WinMode.DELETE)));
+		buttonObstacleLayout.addComponents(btnAddObstacle, btnDelObstacle);
 		hobstacleLayout.addComponents(obstacleList, obstacleView);
 		vobstacleLayout.addComponents(hobstacleLayout, buttonObstacleLayout);
 		tabSheet.addTab(vobstacleLayout, "Проблемы и решения", VaadinIcons.ERASER);
@@ -210,30 +244,54 @@ public class ProjectPage extends AbstractView<Project> {
 	}
 	
 	@Override
-	public void beforeClientResponse(boolean initial) {
-		super.beforeClientResponse(initial);
-		Set<Organization> orgList = Beans.getCurrentUser().getOrganizationList();
+	public void initData() {
+		Set<Organization> orgList = getUser().getOrganizationList();
+		dataProvider.getTreeData().clear();
+		parentMap.clear();
+		orgMap.clear();
 		for(Organization org : orgList) {
 			Project parent = new Project(org);
-			data.addItem(null, parent);
-			data.addItems(parent, org.getProjectList());
+			dataProvider.getTreeData().addItem(null, parent);
+			dataProvider.getTreeData().addItems(parent, org.getProjectList());
+			parentMap.put(org.getId(), parent);
+			orgMap.put(org.getId(), org);
 		}
 		
 		grid.addSelectionListener(event -> {
 			if(event.getFirstSelectedItem().isPresent()) {
-				setSelectedItem(event.getFirstSelectedItem().get());
+				Project prj = event.getFirstSelectedItem().get();
+				setSelectedItem(prj);
+				selectedParent = parentMap.get(prj.getOrganization().getId());
 			} else {
 				setSelectedItem(null);
+				selectedParent = null;
 			}
 			refresh();
 		});
 		
+		bugGrid.addSelectionListener(event -> {
+			if(event.getFirstSelectedItem().isPresent()) {
+				selectedBug = event.getFirstSelectedItem().get();
+			} else {
+				selectedBug = null;
+			}			
+		});
+
+		logGrid.addSelectionListener(event -> {
+			if(event.getFirstSelectedItem().isPresent()) {
+				selectedLog = event.getFirstSelectedItem().get();
+			} else {
+				selectedLog = null;
+			}			
+		});
+		
 		obstacleList.addSelectionListener(event -> {
 			if(event.getFirstSelectedItem().isPresent()) {
-				Diary diary = event.getFirstSelectedItem().get();
-				refresh(diary);
+				selectedObstacle = event.getFirstSelectedItem().get();
+				refresh(selectedObstacle);
 			} else {
-				refresh(null);
+				selectedObstacle = null;
+				refresh(selectedObstacle);
 			}			
 		});
 	}
@@ -244,8 +302,10 @@ public class ProjectPage extends AbstractView<Project> {
 		if(selectedItem != null && selectedItem.getState() != ProjectStates.ORGANIZATION) {
 			tagsList.clear();
 			tagsList.setItems(selectedItem.getSkillList());
-			bugsGrid.setItems(selectedItem.getBugList());
-			logGrid.setItems(selectedItem.getLogList());
+			bugDataProvider.getItems().clear();
+			bugDataProvider.getItems().addAll(selectedItem.getBugList());
+			logDataProvider.getItems().clear();
+			logDataProvider.getItems().addAll(selectedItem.getLogList());
 			obstacleList.clear();
 			obstacleList.setItems(selectedItem.getObstacleList());
 			textEdit.setValue(selectedItem.getDescription());
@@ -256,8 +316,8 @@ public class ProjectPage extends AbstractView<Project> {
 			tabView.setSource(streamResource);
 		} else {
 			tagsList.clear();
-			bugsGrid.setItems(new HashSet<Bug>());
-			logGrid.setItems(new HashSet<Log>());
+			bugDataProvider.getItems().clear();
+			logDataProvider.getItems().clear();
 			obstacleList.clear();
 			textEdit.setValue("");
 			htmlEdit.setValue("");			
@@ -265,7 +325,7 @@ public class ProjectPage extends AbstractView<Project> {
 		}
 		logGrid.getDataProvider().refreshAll();
 		tagsList.getDataProvider().refreshAll();
-		bugsGrid.getDataProvider().refreshAll();
+		bugGrid.getDataProvider().refreshAll();
 		obstacleList.getDataProvider().refreshAll();
 	}
 	
@@ -277,5 +337,41 @@ public class ProjectPage extends AbstractView<Project> {
 		} else {
 			obstacleView.setSource(new StreamResource(() -> new ByteArrayInputStream("".getBytes()), "tempnull.html"));
 		}
+	}
+
+	@Override
+	protected Project getEmptyItem() {
+		Project project = new Project();
+		return project;
+	}
+
+	@Override
+	protected AbstractWindow<Project> getInsertWindow() {
+		ProjectWindow projectWindow = new ProjectWindow(getEmptyItem(), WinMode.INSERT);
+		return projectWindow;
+	}
+
+	@Override
+	protected AbstractWindow<Project> getUpdateWindow() {
+		ProjectWindow projectWindow = new ProjectWindow(getSelectedItem(), WinMode.UPDATE);
+		return projectWindow;
+	}
+
+	@Override
+	protected AbstractWindow<Project> getDeleteWindow() {
+		ProjectWindow projectWindow = new ProjectWindow(getSelectedItem(), WinMode.DELETE);
+		return projectWindow;
+	}
+
+	@Override
+	protected void addItem(Project item) {
+		dataProvider.getTreeData().addItem(selectedParent, item);
+		orgMap.get(item.getOrganization().getId()).getProjectList().add(item);
+	}
+
+	@Override
+	protected void removeItem(Project item) {
+		dataProvider.getTreeData().removeItem(item);
+		orgMap.get(item.getOrganization().getId()).getProjectList().remove(item);
 	}
 }
